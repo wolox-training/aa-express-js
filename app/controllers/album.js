@@ -3,12 +3,20 @@
 const express = require('express');
 
 const config = require('../../config').common.albums;
+const albumService = require('../services/albumService');
+const log = require('../logger');
 
 const albumsRouter = express.Router();
 
 albumsRouter.get('/', (req, res) => {
-  const albums = fetch(config.api_url);
-  res.status(200).send(albums);
+  albumService.getAlbums().then(albums => {
+    log.info(albums);
+    res.status(200).send(albums);
+  }).catch(err => {
+    log.error(err.message);
+    err.internalCode = "CONECTION_ERROR";
+    next(err);
+  });
 });
 
 module.exports = albumsRouter;
