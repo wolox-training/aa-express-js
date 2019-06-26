@@ -1,46 +1,45 @@
-const db = require('../models');
-
-const { Model } = db.Sequelize;
-const sequalize = db.sequelize;
-
-class User extends Model {}
-User.init(
-  {
-    id: {
-      type: db.Sequalize.INTEGER,
-      unique: true,
-      primaryKey: true,
-      autoIncrement: true,
-      validate: {
-        isNotNull: true
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define(
+    'User',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        unique: true,
+        primaryKey: true,
+        autoIncrement: true,
+        validate: {
+          isNotNull: true
+        }
+      },
+      firstName: {
+        type: DataTypes.STRING,
+        validate: {
+          isNotNull: true
+        }
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        validate: {
+          isNotNull: true
+        }
+      },
+      email: {
+        type: DataTypes.STRING,
+        unique: true,
+        validate: {
+          isNotNull: true,
+          isEmail: true
+        }
+      },
+      password: {
+        type: DataTypes.STRING,
+        validate: {
+          isNotNull: true
+        }
       }
     },
-    name: {
-      type: db.Sequalize.STRING,
-      validate: {
-        isNotNull: true
-      }
-    },
-    lastName: {
-      type: db.Sequalize.STRING,
-      validate: {
-        isNotNull: true
-      }
-    },
-    email: {
-      type: db.Sequalize.STRING,
-      unique: true,
-      validate: {
-        isNotNull: true,
-        isEmail: true
-      }
-    },
-    password: {
-      type: db.Sequalize.STRING,
-      validate: {
-        isNotNull: true
-      }
-    }
-  },
-  { sequalize, modelName: 'user' }
-);
+    {}
+  );
+  return User;
+};
