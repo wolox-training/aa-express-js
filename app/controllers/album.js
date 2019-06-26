@@ -10,6 +10,7 @@ const albumsRouter = express.Router();
 albumsRouter.get('/', (req, res, next) => {
   albumService
     .getAlbums()
+    .then(response => response.json())
     .then(albums => {
       log.info(albums);
       res.status(200).send(albums);
