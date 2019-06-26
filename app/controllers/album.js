@@ -1,38 +1,32 @@
-/* eslint-disable new-cap */
-
-const express = require('express');
-
 const albumService = require('../services/albumService');
 const log = require('../logger');
 
-const albumsRouter = express.Router();
+module.exports = {
+  getAlbums: (req, res, next) => {
+    albumService
+      .getAlbums()
+      .then(response => response.json())
+      .then(albums => {
+        res.status(200).send(albums);
+      })
+      .catch(err => {
+        log.error(err.message);
+        err.internalCode = 'CONECTION_ERROR';
+        next(err);
+      });
+  },
 
-albumsRouter.get('/', (req, res, next) => {
-  albumService
-    .getAlbums()
-    .then(response => response.json())
-    .then(albums => {
-      res.status(200).send(albums);
-    })
-    .catch(err => {
-      log.error(err.message);
-      err.internalCode = 'CONECTION_ERROR';
-      next(err);
-    });
-});
-
-albumsRouter.get('/:id/photos', (req, res, next) => {
-  const albumId = req.params.id;
-  albumService
-    .getPhotosOfAlbum(albumId)
-    .then(photos => {
-      res.status(200).send(photos);
-    })
-    .catch(err => {
-      log.error(err.message);
-      err.internalCode = 'CONECTION_ERROR';
-      next(err);
-    });
-});
-
-module.exports = albumsRouter;
+  getPhotoOfAlbum: (req, res, next) => {
+    const albumId = req.params.id;
+    albumService
+      .getPhotosOfAlbum(albumId)
+      .then(photos => {
+        res.status(200).send(photos);
+      })
+      .catch(err => {
+        log.error(err.message);
+        err.internalCode = 'CONECTION_ERROR';
+        next(err);
+      });
+  }
+};
