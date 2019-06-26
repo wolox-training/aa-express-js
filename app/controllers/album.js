@@ -12,8 +12,21 @@ albumsRouter.get('/', (req, res, next) => {
     .getAlbums()
     .then(response => response.json())
     .then(albums => {
-      log.info(albums);
       res.status(200).send(albums);
+    })
+    .catch(err => {
+      log.error(err.message);
+      err.internalCode = 'CONECTION_ERROR';
+      next(err);
+    });
+});
+
+albumsRouter.get('/:id/photos', (req, res, next) => {
+  const albumId = req.params.id;
+  albumService
+    .getPhotosOfAlbum(albumId)
+    .then(photos => {
+      res.status(200).send(photos);
     })
     .catch(err => {
       log.error(err.message);
