@@ -1,6 +1,7 @@
-// const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 const db = require('../models');
+const saltRounds = 10;
 
 module.exports = {
   checkUserProperties: query => {
@@ -9,15 +10,17 @@ module.exports = {
     }
     return false;
   },
-  createUser: async query => {
+  createUser: query => {
     try {
-      const result = await db.User.create({
-        firstName: query.firstName,
-        lastName: query.lastName,
-        email: query.email,
-        password: query.password
+      return bcrypt.hash(query.password, saltRounds).then(async hash => {
+        const result = await db.User.create({
+          firstName: query.firstName,
+          lastName: query.lastName,
+          email: query.email,
+          password: hash
+        });
+        return result;
       });
-      return result;
     } catch (e) {
       throw e;
     }

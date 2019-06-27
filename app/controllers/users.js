@@ -8,6 +8,11 @@ module.exports = {
       err.internalCode = 'BAD_REQUEST';
       next(err);
     }
+    if (!services.validatePassword(req.query.password)) {
+      const err = new Error('Password is too short');
+      err.internalCode = 'BAD_REQUEST';
+      next(err);
+    }
     services
       .createUser(req.query)
       .then(result => {
