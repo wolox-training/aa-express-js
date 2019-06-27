@@ -1,13 +1,10 @@
+// const bcrypt = require('bcryptjs');
+
 const db = require('../models');
 
 module.exports = {
   checkUserProperties: query => {
-    if (
-      query.hasProperty('firstName') &&
-      query.hasProperty('lastName') &&
-      query.hasProperty('email') &&
-      query.hasProperty('password')
-    ) {
+    if (query.firstName && query.lastName && query.email && query.password) {
       return true;
     }
     return false;
@@ -24,5 +21,11 @@ module.exports = {
     } catch (e) {
       throw e;
     }
+  },
+  validatePassword: password => {
+    if (password.length >= 8) {
+      return true;
+    }
+    return false;
   }
 };
