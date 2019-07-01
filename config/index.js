@@ -45,6 +45,9 @@ const config = {
     },
     albums: {
       api_url: process.env.ALBUMS_API_URL
+    },
+    jwt: {
+      secret_key: process.env.SECRET_KEY
     }
   }
 };
