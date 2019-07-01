@@ -4,13 +4,13 @@ const db = require('../models');
 const saltRounds = 10;
 
 module.exports = {
-  createUser: query => {
+  createUser: body => {
     try {
-      return bcrypt.hash(query.password, saltRounds).then(async hash => {
+      return bcrypt.hash(body.password, saltRounds).then(async hash => {
         const result = await db.User.create({
-          firstName: query.firstName,
-          lastName: query.lastName,
-          email: query.email,
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
           password: hash
         });
         return result;
