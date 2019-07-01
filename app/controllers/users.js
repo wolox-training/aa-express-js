@@ -16,7 +16,22 @@ module.exports = {
           .send()
       )
       .catch(err => {
-        err.internalCode = 'DATABASE_ERROR';
+        err.internalCode = 'database_error';
+        log.error(err.message);
+        next(err);
+      });
+  },
+  loginUser: (req, res, next) => {
+    services
+      .loginUser(req.body)
+      .then(token => {
+        res
+          .json({ token })
+          .status(201)
+          .send();
+      })
+      .catch(err => {
+        err.internalCode = 'bad_request';
         log.error(err.message);
         next(err);
       });
