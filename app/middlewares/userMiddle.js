@@ -5,7 +5,7 @@ module.exports = {
       return next();
     }
     const err = new Error('User atributte missing');
-    err.internalCode = 'BAD_REQUEST';
+    err.internalCode = 'bad_request';
     return next(err);
   },
   validatePassword: (req, res, next) => {
@@ -14,7 +14,7 @@ module.exports = {
       return next();
     }
     const err = new Error('Password is too short');
-    err.internalCode = 'BAD_REQUEST';
+    err.internalCode = 'bad_request';
     return next(err);
   }
 };
