@@ -1,40 +1,40 @@
 /* eslint-disable require-await */
 const { checkUserProperties } = require('../app/middlewares/userMiddle');
 
-const rightQuery = {
+const rightBody = {
   firstName: 'Alejo',
   lastName: 'Acevedo',
   email: 'alejo.acevedo@wolox.com.ar',
   password: '123456789'
 };
 
-const notFirstNameQuery = {
+const notFirstNameBody = {
   lastName: 'Acevedo',
   email: 'alejo.acevedo@wolox.com.ar',
   password: '123456789'
 };
 
-const notLastNameQuery = {
+const notLastNameBody = {
   firstName: 'Alejo',
   email: 'alejo.acevedo@wolox.com.ar',
   password: '123456789'
 };
 
-const notEmailQuery = {
+const notEmailBody = {
   firstName: 'Alejo',
   lastName: 'Acevedo',
   password: '123456789'
 };
 
-const notPasswordQuery = {
+const notPasswordBody = {
   firstName: 'Alejo',
   lastName: 'Acevedo',
   email: 'alejo.acevedo@wolox.com.ar'
 };
 
-test('Right Query Check', async () => {
+test('Right Body Check', async () => {
   const req = {
-    query: rightQuery
+    body: rightBody
   };
   const res = {};
   const promise = new Promise((resolve, reject) => {
@@ -48,9 +48,9 @@ test('Right Query Check', async () => {
   expect(promise).resolves.not.toThrow();
 });
 
-test('Not First Name Query Check', async () => {
+test('Not First Name Body Check', async () => {
   const req = {
-    query: notFirstNameQuery
+    body: notFirstNameBody
   };
   const res = {};
   const promise = new Promise((resolve, reject) => {
@@ -64,9 +64,9 @@ test('Not First Name Query Check', async () => {
   expect(promise).rejects.toThrow();
 });
 
-test('Not Last Name Query Check', () => {
+test('Not Last Name Body Check', () => {
   const req = {
-    query: notLastNameQuery
+    body: notLastNameBody
   };
   const res = {};
   const promise = new Promise((resolve, reject) => {
@@ -80,9 +80,9 @@ test('Not Last Name Query Check', () => {
   expect(promise).rejects.toThrow();
 });
 
-test('Not Email Query Check', () => {
+test('Not Email Body Check', () => {
   const req = {
-    query: notEmailQuery
+    body: notEmailBody
   };
   const res = {};
   const promise = new Promise((resolve, reject) => {
@@ -96,9 +96,9 @@ test('Not Email Query Check', () => {
   expect(promise).rejects.toThrow();
 });
 
-test('Not Password Query Check', () => {
+test('Not Password Body Check', () => {
   const req = {
-    query: notPasswordQuery
+    body: notPasswordBody
   };
   const res = {};
   const promise = new Promise((resolve, reject) => {

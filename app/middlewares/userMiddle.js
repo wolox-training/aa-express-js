@@ -1,20 +1,20 @@
 module.exports = {
   checkUserProperties: (req, res, next) => {
-    const { query } = req;
-    if (query.firstName && query.lastName && query.email && query.password) {
-      next();
+    const { body } = req;
+    if (body.firstName && body.lastName && body.email && body.password) {
+      return next();
     }
     const err = new Error('User atributte missing');
     err.internalCode = 'BAD_REQUEST';
-    next(err);
+    return next(err);
   },
   validatePassword: (req, res, next) => {
-    const { password } = req.query;
-    if (password.length < 8) {
-      const err = new Error('Password is too short');
-      err.internalCode = 'BAD_REQUEST';
-      next(err);
+    const { password } = req.body;
+    if (password.length >= 8) {
+      return next();
     }
-    next();
+    const err = new Error('Password is too short');
+    err.internalCode = 'BAD_REQUEST';
+    return next(err);
   }
 };
