@@ -3,16 +3,6 @@ const log = require('../logger');
 
 module.exports = {
   addUser: (req, res, next) => {
-    if (!services.checkUserProperties(req.query)) {
-      const err = new Error('User atributte missing');
-      err.internalCode = 'BAD_REQUEST';
-      next(err);
-    }
-    if (!services.validatePassword(req.query.password)) {
-      const err = new Error('Password is too short');
-      err.internalCode = 'BAD_REQUEST';
-      next(err);
-    }
     services
       .createUser(req.query)
       .then(result => {
