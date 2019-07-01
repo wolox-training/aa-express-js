@@ -1,4 +1,5 @@
-const { checkUserProperties } = require('../app/services/userService');
+/* eslint-disable require-await */
+const { checkUserProperties } = require('../app/middlewares/userMiddle');
 
 const rightQuery = {
   firstName: 'Alejo',
@@ -31,22 +32,82 @@ const notPasswordQuery = {
   email: 'alejo.acevedo@wolox.com.ar'
 };
 
-test('Right Query Check', () => {
-  expect(checkUserProperties(rightQuery)).toBeTruthy();
+test('Right Query Check', async () => {
+  const req = {
+    query: rightQuery
+  };
+  const res = {};
+  const promise = new Promise((resolve, reject) => {
+    checkUserProperties(req, res, err => {
+      if (!err) {
+        resolve();
+      }
+      reject(err);
+    });
+  });
+  expect(promise).resolves.not.toThrow();
 });
 
-test('Not First Name Query Check', () => {
-  expect(checkUserProperties(notFirstNameQuery)).toBeFalsy();
+test('Not First Name Query Check', async () => {
+  const req = {
+    query: notFirstNameQuery
+  };
+  const res = {};
+  const promise = new Promise((resolve, reject) => {
+    checkUserProperties(req, res, err => {
+      if (!err) {
+        resolve();
+      }
+      reject(err);
+    });
+  });
+  expect(promise).rejects.toThrow();
 });
 
 test('Not Last Name Query Check', () => {
-  expect(checkUserProperties(notLastNameQuery)).toBeFalsy();
+  const req = {
+    query: notLastNameQuery
+  };
+  const res = {};
+  const promise = new Promise((resolve, reject) => {
+    checkUserProperties(req, res, err => {
+      if (!err) {
+        resolve();
+      }
+      reject(err);
+    });
+  });
+  expect(promise).rejects.toThrow();
 });
 
 test('Not Email Query Check', () => {
-  expect(checkUserProperties(notEmailQuery)).toBeFalsy();
+  const req = {
+    query: notEmailQuery
+  };
+  const res = {};
+  const promise = new Promise((resolve, reject) => {
+    checkUserProperties(req, res, err => {
+      if (!err) {
+        resolve();
+      }
+      reject(err);
+    });
+  });
+  expect(promise).rejects.toThrow();
 });
 
 test('Not Password Query Check', () => {
-  expect(checkUserProperties(notPasswordQuery)).toBeFalsy();
+  const req = {
+    query: notPasswordQuery
+  };
+  const res = {};
+  const promise = new Promise((resolve, reject) => {
+    checkUserProperties(req, res, err => {
+      if (!err) {
+        resolve();
+      }
+      reject(err);
+    });
+  });
+  expect(promise).rejects.toThrow();
 });
