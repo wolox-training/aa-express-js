@@ -6,7 +6,7 @@ const longPass = '12345678912346579';
 
 test('No validate password shorter than 8 characters', () => {
   const req = {
-    query: {
+    body: {
       password: shortPass
     }
   };
@@ -24,7 +24,7 @@ test('No validate password shorter than 8 characters', () => {
 
 test('Validate password equal to 8 characters', () => {
   const req = {
-    query: {
+    body: {
       password: equalPass
     }
   };
@@ -42,7 +42,7 @@ test('Validate password equal to 8 characters', () => {
 
 test('Validate password longer than 8 characters', () => {
   const req = {
-    query: {
+    body: {
       password: longPass
     }
   };
