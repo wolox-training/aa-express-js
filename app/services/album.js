@@ -16,14 +16,15 @@ exports.getAlbums = async () => {
 };
 
 exports.getPhotosOfAlbum = async albumId => {
-  const endpoint = `${config.api_url}/photos`;
+  const query = `?albumId=${albumId}`;
+  const endpoint = `${config.api_url}/photos${query}`;
   try {
     const response = await fetch(endpoint);
     if (response.status !== 200) {
       throw new Error('Error calling api');
     }
     const photos = await response.json();
-    return photos.filter(photo => photo.albumId === Number(albumId));
+    return photos;
   } catch (e) {
     throw e;
   }
