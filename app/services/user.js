@@ -28,13 +28,22 @@ exports.createUser = query => {
   }
   try {
     return bcrypt.hash(query.password, saltRounds).then(async hash => {
-      const result = await db.users.create({
-        firstName: query.firstName,
-        lastName: query.lastName,
-        email: query.email,
-        password: hash
-      });
-      return result;
+      try {
+        const result = await db.users.create({
+          firstName: query.firstName,
+          lastName: query.lastName,
+          email: query.email,
+          password: hash
+        });
+        return result;
+      } catch (e) {
+        if (e.message === 'Validation error') {
+          e.internalCode = 'bad_request';
+          throw e;
+        }
+        e.internalCode = 'database_error';
+        throw e;
+      }
     });
   } catch (e) {
     e.internalCode = 'database_error';
