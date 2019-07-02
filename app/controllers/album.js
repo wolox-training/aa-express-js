@@ -4,13 +4,12 @@ const log = require('../logger');
 exports.getAlbums = (req, res, next) => {
   albumService
     .getAlbums()
-    .then(response => response.json())
     .then(albums => {
       res.status(200).send(albums);
     })
     .catch(err => {
       log.error(err.message);
-      err.internalCode = 'CONECTION_ERROR';
+      err.internalCode = 'connection_error';
       next(err);
     });
 };
@@ -24,7 +23,7 @@ exports.getPhotoOfAlbum = (req, res, next) => {
     })
     .catch(err => {
       log.error(err.message);
-      err.internalCode = 'CONECTION_ERROR';
+      err.internalCode = 'connection_error';
       next(err);
     });
 };

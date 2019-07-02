@@ -9,7 +9,7 @@ exports.getAlbums = async () => {
     if (response.status !== 200) {
       throw new Error('Error calling api');
     }
-    return response;
+    return response.json();
   } catch (e) {
     throw e;
   }
