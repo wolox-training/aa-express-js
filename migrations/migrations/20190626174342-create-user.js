@@ -1,9 +1,6 @@
-/* eslint-disable arrow-body-style */
-/* eslint-disable no-unused-vars */
-'use strict';
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Users', {
+  up: (queryInterface, Sequelize) =>
+    queryInterface.createTable('users', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,22 +8,18 @@ module.exports = {
         unique: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
+      first_name: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      lastName: {
+      last_name: {
         type: Sequelize.STRING,
         allowNull: false
       },
       email: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: true,
-          contains: '@wolox.com.ar'
-        }
+        unique: true
       },
       password: {
         type: Sequelize.STRING,
@@ -40,9 +33,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
-  },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Users');
-  }
+    }),
+  down: queryInterface => queryInterface.dropTable('users')
 };

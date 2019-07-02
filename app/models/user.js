@@ -1,9 +1,6 @@
-/* eslint-disable func-names */
-/* eslint-disable no-unused-vars */
-'use strict';
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
-    'User',
+    'users',
     {
       id: {
         allowNull: false,
@@ -12,22 +9,18 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         type: DataTypes.INTEGER
       },
-      firstName: {
+      first_name: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      lastName: {
+      last_name: {
         type: DataTypes.STRING,
         allowNull: false
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: true,
-          contains: '@wolox.com.ar'
-        }
+        unique: true
       },
       password: {
         type: DataTypes.STRING,
@@ -36,8 +29,5 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  User.associate = function(models) {
-    // associations can be defined here
-  };
   return User;
 };
