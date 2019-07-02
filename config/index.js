@@ -45,6 +45,10 @@ const config = {
     },
     albums: {
       api_url: process.env.ALBUMS_API_URL
+    },
+    user: {
+      password_regex: process.env.PASSWORD_REGEX,
+      email_regex: process.env.EMAIL_REGEX
     }
   }
 };
