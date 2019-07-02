@@ -1,51 +1,78 @@
-const { createUser } = require('../app/services/user');
+/* eslint-disable no-unused-vars */
+const request = require('supertest');
+const Chance = require('chance');
+
+const app = require('../app');
+
+const chance = new Chance();
 
 const firstRightQuery = {
-  firstName: 'Alejo',
-  lastName: 'Acevedo',
-  email: 'alejo.acevedo@wolox.com.ar',
-  password: '123456789'
+  firstName: chance.first(),
+  lastName: chance.last(),
+  email: chance.email({ domain: 'wolox.com.ar' }),
+  password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
 const secondRightQuery = {
-  firstName: 'Juan',
-  lastName: 'Perez',
-  email: 'juan.perez@wolox.com.ar',
-  password: '123456789'
+  firstName: chance.first(),
+  lastName: chance.last(),
+  email: chance.email({ domain: 'wolox.com.ar' }),
+  password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
 const notWoloxEmailQuery = {
-  firstName: 'Alejo',
-  lastName: 'Acevedo',
-  email: 'alejo.acevedo@live.com.ar',
-  password: '123456789'
+  firstName: chance.first(),
+  lastName: chance.last(),
+  email: chance.email({ domain: 'gmail.com.ar' }),
+  password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
 const notEmailFormatQuery = {
-  firstName: 'Alejo',
-  lastName: 'Acevedo',
-  email: '@wolox.com.ar.Alejo',
-  password: '123456789'
+  firstName: chance.first(),
+  lastName: chance.last(),
+  email: chance.string(),
+  password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
 test('Right Only One Creation User', async () => {
-  await expect(createUser(firstRightQuery)).resolves.not.toThrow();
+  await request(app)
+    .post('/users')
+    .send(firstRightQuery)
+    .expect(200);
 });
 
 test('Try To Create Two User With Equal Email', async () => {
-  await expect(createUser(firstRightQuery)).resolves.not.toThrow();
-  await expect(createUser(firstRightQuery)).rejects.toThrow();
+  await request(app)
+    .post('/users')
+    .send(firstRightQuery)
+    .expect(200);
+  await request(app)
+    .post('/users')
+    .send(firstRightQuery)
+    .expect(400);
 });
 
 test('Try To Create Two User With Different Email', async () => {
-  await expect(createUser(firstRightQuery)).resolves.not.toThrow();
-  await expect(createUser(secondRightQuery)).resolves.not.toThrow();
+  await request(app)
+    .post('/users')
+    .send(firstRightQuery)
+    .expect(200);
+  await request(app)
+    .post('/users')
+    .send(secondRightQuery)
+    .expect(200);
 });
 
 test('Try To Create One User With Not Wolox Email', async () => {
-  await expect(createUser(notWoloxEmailQuery)).rejects.toThrow();
+  await request(app)
+    .post('/users')
+    .send(notWoloxEmailQuery)
+    .expect(400);
 });
 
 test('Try To Create One User With Not Format Email', async () => {
-  await expect(createUser(notEmailFormatQuery)).rejects.toThrow();
+  await request(app)
+    .post('/users')
+    .send(notEmailFormatQuery)
+    .expect(400);
 });
