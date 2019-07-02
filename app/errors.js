@@ -11,3 +11,6 @@ exports.defaultError = message => internalError(message, exports.DEFAULT_ERROR);
 
 exports.CONECTION_ERROR = 'connection_error';
 exports.conectionError = message => internalError(message, exports.CONECTION_ERROR);
+
+exports.BAD_REQUEST = 'bad_request';
+exports.bad_request = message => internalError(message, exports.BAD_REQUEST);
