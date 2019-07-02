@@ -11,6 +11,21 @@ exports.checkUserProperties = query => {
   return false;
 };
 exports.createUser = query => {
+  if (!this.checkUserProperties(query)) {
+    const err = new Error('User atributte missing');
+    err.internalCode = 'bad_request';
+    throw err;
+  }
+  if (!this.validatePassword(query.password)) {
+    const err = new Error('Password is not valid');
+    err.internalCode = 'bad_request';
+    throw err;
+  }
+  if (!this.validateEmail(query.email)) {
+    const err = new Error('Email is not valid');
+    err.internalCode = 'bad_request';
+    throw err;
+  }
   try {
     return bcrypt.hash(query.password, saltRounds).then(async hash => {
       const result = await db.users.create({
@@ -22,6 +37,7 @@ exports.createUser = query => {
       return result;
     });
   } catch (e) {
+    e.internalCode = 'database_error';
     throw e;
   }
 };
