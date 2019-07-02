@@ -1,4 +1,4 @@
-const albumService = require('../services/albumService');
+const albumService = require('../services/album');
 const log = require('../logger');
 
 module.exports = {
