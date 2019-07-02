@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-const { createUser } = require('../app/services/userService');
+const { createUser } = require('../app/services/user');
 
 const firstRightQuery = {
   firstName: 'Alejo',

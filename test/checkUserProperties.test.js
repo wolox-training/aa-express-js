@@ -1,4 +1,4 @@
-const { checkUserProperties } = require('../app/services/userService');
+const { checkUserProperties } = require('../app/services/user');
 
 const rightQuery = {
   firstName: 'Alejo',

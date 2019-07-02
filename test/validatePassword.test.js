@@ -1,4 +1,4 @@
-const { validatePassword } = require('../app/services/userService');
+const { validatePassword } = require('../app/services/user');
 
 const shortPass = '1234';
 const equalPass = '12345678';
