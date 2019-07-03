@@ -48,6 +48,10 @@ const config = {
     },
     jwt: {
       secret_key: process.env.SECRET_KEY
+    },
+    user: {
+      password_regex: process.env.PASSWORD_REGEX,
+      email_regex: process.env.EMAIL_REGEX
     }
   }
 };

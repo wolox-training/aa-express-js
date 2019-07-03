@@ -57,6 +57,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
+    "chance": "^1.0.18",
     "express": "^4.16.2",
     "express-wolox-logger": "0.0.2",
     "jsonwebtoken": "^8.5.1",
