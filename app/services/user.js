@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 
+const errors = require('../errors');
 const db = require('../models');
 const saltRounds = 10;
 
@@ -16,15 +17,12 @@ exports.createUser = query => {
         return result;
       } catch (e) {
         if (e.message === 'Validation error') {
-          e.internalCode = 'bad_request';
-          throw e;
+          throw errors.badRequest(e.message);
         }
-        e.internalCode = 'database_error';
-        throw e;
+        throw errors.databaseError(e.message);
       }
     });
   } catch (e) {
-    e.internalCode = 'database_error';
-    throw e;
+    throw errors.defaultError(e.message);
   }
 };
