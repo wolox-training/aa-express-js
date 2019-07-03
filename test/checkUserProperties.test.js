@@ -1,4 +1,3 @@
-/* eslint-disable require-await */
 const { checkUserProperties } = require('../app/middlewares/userMiddle');
 
 const rightBody = {
