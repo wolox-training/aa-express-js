@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 const db = require('../models');
+const errors = require('../errors');
 const userConfig = require('../../config').common.user;
 const saltRounds = 10;
 
@@ -12,19 +13,13 @@ exports.checkUserProperties = query => {
 };
 exports.createUser = query => {
   if (!this.checkUserProperties(query)) {
-    const err = new Error('User atributte missing');
-    err.internalCode = 'bad_request';
-    throw err;
+    throw errors.badRequest('User atributte missing');
   }
   if (!this.validatePassword(query.password)) {
-    const err = new Error('Password is not valid');
-    err.internalCode = 'bad_request';
-    throw err;
+    throw errors.badRequest('Password is not valid');
   }
   if (!this.validateEmail(query.email)) {
-    const err = new Error('Email is not valid');
-    err.internalCode = 'bad_request';
-    throw err;
+    throw errors.badRequest('Email is not valid');
   }
   try {
     return bcrypt.hash(query.password, saltRounds).then(async hash => {
@@ -37,8 +32,7 @@ exports.createUser = query => {
       return result;
     });
   } catch (e) {
-    e.internalCode = 'database_error';
-    throw e;
+    throw errors.databaseError(e.message);
   }
 };
 exports.validatePassword = password => {
