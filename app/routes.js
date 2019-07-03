@@ -12,6 +12,11 @@ exports.init = app => {
     [userMiddle.checkUserProperties, userMiddle.validateEmail, userMiddle.validatePassword],
     userController.addUser
   );
+  app.post(
+    '/users/sessions',
+    [userMiddle.validateEmail, userMiddle.validatePassword],
+    userController.loginUser
+  );
   // app.get('/endpoint/get/path', [], controller.methodGET);
   // app.put('/endpoint/put/path', [], controller.methodPUT);
   // app.post('/endpoint/post/path', [], controller.methodPOST);
