@@ -6,15 +6,27 @@ const db = require('../models');
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
 
-exports.createUser = query => {
+exports.createAdminUser = async body => {
   try {
-    return bcrypt.hash(query.password, saltRounds).then(async hash => {
+    let result = await db.users.find({ where: { email: body.email } });
+    if (!result) {
+      result = await this.createUser(body);
+    }
+    return result.update({ admin: true });
+  } catch (e) {
+    throw errors.databaseError(e.message);
+  }
+};
+exports.createUser = body => {
+  try {
+    return bcrypt.hash(body.password, saltRounds).then(async hash => {
       try {
         const result = await db.users.create({
-          firstName: query.firstName,
-          lastName: query.lastName,
-          email: query.email,
-          password: hash
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
+          password: hash,
+          admin: false
         });
         return result;
       } catch (e) {
@@ -25,6 +37,9 @@ exports.createUser = query => {
       }
     });
   } catch (e) {
+    if (e.internalCode) {
+      throw e;
+    }
     throw errors.defaultError(e.message);
   }
 };
@@ -33,21 +48,24 @@ exports.loginUser = async body => {
     throw errors.badRequest('Missing attribute');
   }
   try {
-    const result = await db.users.findAll({
+    const result = await db.users.find({
       where: {
         email: body.email
       }
     });
-    if (result.length === 0) {
+    if (!result) {
       throw errors.badRequest('User not found');
     }
-    return bcrypt.compare(body.password, result[0].password).then(res => {
+    return bcrypt.compare(body.password, result.password).then(res => {
       if (!res) {
         throw errors.badRequest('Wrong password');
       }
-      return jwt.sign({ email: body.email }, secretKey);
+      return jwt.sign({ email: result.email, admin: result.admin }, secretKey);
     });
   } catch (e) {
+    if (e.internalCode) {
+      throw e;
+    }
     throw errors.defaultError(e.message);
   }
 };
