@@ -1,18 +1,18 @@
 const jwt = require('jsonwebtoken');
 
 const secretKey = require('../../config').common.jwt.secret_key;
+const errors = require('../errors');
 
 exports.checkToken = (req, res, next) => {
   const { token } = req.headers;
   try {
     if (!token) {
-      throw new Error('No token provided');
+      return next(errors.badRequest('Not token provided'));
     }
     const decode = jwt.verify(token, secretKey);
     req.decode = decode;
-    next();
+    return next();
   } catch (e) {
-    e.internalCode = 'forbidden_user';
-    next(e);
+    return next(errors.forbiddenUser(e.message));
   }
 };
