@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const errors = require('../errors');
 const db = require('../models');
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
@@ -18,16 +19,13 @@ exports.createUser = query => {
         return result;
       } catch (e) {
         if (e.message === 'Validation error') {
-          e.internalCode = 'bad_request';
-          throw e;
+          throw errors.badRequest(e.message);
         }
-        e.internalCode = 'database_error';
-        throw e;
+        throw errors.databaseError(e.message);
       }
     });
   } catch (e) {
-    e.internalCode = 'default_error';
-    throw e;
+    throw errors.defaultError(e.message);
   }
 };
 exports.loginUser = async body => {
