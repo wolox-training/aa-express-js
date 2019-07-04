@@ -2,6 +2,7 @@
 const { healthCheck } = require('./controllers/healthCheck');
 const albumsController = require('./controllers/album.js');
 const userController = require('./controllers/users');
+const adminController = require('./controllers/admin');
 const userMiddle = require('./middlewares/user');
 const securityMiddle = require('./middlewares/security');
 exports.init = app => {
@@ -19,6 +20,16 @@ exports.init = app => {
     userController.loginUser
   );
   app.get('/users', [securityMiddle.checkToken], userController.getUsers);
+  app.post(
+    '/admin/users',
+    [
+      userMiddle.checkUserProperties,
+      userMiddle.validateEmail,
+      userMiddle.validatePassword,
+      securityMiddle.checkToken
+    ],
+    adminController.addAdminUser
+  );
   // app.get('/endpoint/get/path', [], controller.methodGET);
   // app.put('/endpoint/put/path', [], controller.methodPUT);
   // app.post('/endpoint/post/path', [], controller.methodPOST);
