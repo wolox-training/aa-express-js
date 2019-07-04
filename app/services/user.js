@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const errors = require('../errors');
 const db = require('../models');
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
@@ -18,23 +19,18 @@ exports.createUser = query => {
         return result;
       } catch (e) {
         if (e.message === 'Validation error') {
-          e.internalCode = 'bad_request';
-          throw e;
+          throw errors.badRequest(e.message);
         }
-        e.internalCode = 'database_error';
-        throw e;
+        throw errors.databaseError(e.message);
       }
     });
   } catch (e) {
-    e.internalCode = 'default_error';
-    throw e;
+    throw errors.defaultError(e.message);
   }
 };
 exports.loginUser = async body => {
   if (!body.email || !body.password) {
-    const err = new Error('Missing attribute');
-    err.internalCode = 'bad_request';
-    throw err;
+    throw errors.badRequest('Missing attribute');
   }
   try {
     const result = await db.users.findAll({
@@ -43,20 +39,16 @@ exports.loginUser = async body => {
       }
     });
     if (result.length === 0) {
-      const err = new Error('User not found');
-      err.internalCode = 'bad_request';
-      throw err;
+      throw errors.badRequest('User not found');
     }
     return bcrypt.compare(body.password, result[0].password).then(res => {
       if (!res) {
-        const err = new Error('Wrong password');
-        err.internalCode = 'bad_request';
-        throw err;
+        throw errors.badRequest('Wrong password');
       }
       return jwt.sign({ email: body.email }, secretKey);
     });
   } catch (e) {
-    throw e;
+    throw errors.defaultError(e.message);
   }
 };
 exports.getUsers = async params => {

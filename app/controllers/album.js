@@ -9,7 +9,6 @@ exports.getAlbums = (req, res, next) =>
     })
     .catch(err => {
       log.error(err.message);
-      err.internalCode = 'connection_error';
       next(err);
     });
 
@@ -22,7 +21,6 @@ exports.getPhotoOfAlbum = (req, res, next) => {
     })
     .catch(err => {
       log.error(err.message);
-      err.internalCode = 'connection_error';
       next(err);
     });
 };

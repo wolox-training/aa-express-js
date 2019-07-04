@@ -13,7 +13,7 @@ exports.CONECTION_ERROR = 'connection_error';
 exports.conectionError = message => internalError(message, exports.CONECTION_ERROR);
 
 exports.BAD_REQUEST = 'bad_request';
-exports.bad_request = message => internalError(message, exports.BAD_REQUEST);
+exports.badRequest = message => internalError(message, exports.BAD_REQUEST);
 
 exports.FORBIDDEN_USER = 'forbidden_user';
-exports.forbidden_user = message => internalError(message, exports.FORBIDDEN_USER);
+exports.forbiddenUser = message => internalError(message, exports.FORBIDDEN_USER);
