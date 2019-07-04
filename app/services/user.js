@@ -30,9 +30,7 @@ exports.createUser = query => {
 };
 exports.loginUser = async body => {
   if (!body.email || !body.password) {
-    const err = new Error('Missing attribute');
-    err.internalCode = 'bad_request';
-    throw err;
+    throw errors.badRequest('Missing attribute');
   }
   try {
     const result = await db.users.findAll({
@@ -41,19 +39,15 @@ exports.loginUser = async body => {
       }
     });
     if (result.length === 0) {
-      const err = new Error('User not found');
-      err.internalCode = 'bad_request';
-      throw err;
+      throw errors.badRequest('User not found');
     }
     return bcrypt.compare(body.password, result[0].password).then(res => {
       if (!res) {
-        const err = new Error('Wrong password');
-        err.internalCode = 'bad_request';
-        throw err;
+        throw errors.badRequest('Wrong password');
       }
       return jwt.sign({ email: body.email }, secretKey);
     });
   } catch (e) {
-    throw e;
+    throw errors.defaultError(e.message);
   }
 };
