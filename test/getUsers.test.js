@@ -146,5 +146,5 @@ test('Not Token Get Users', async () => {
   await request(app)
     .get('/users')
     .query({ page: '0', size: '1' })
-    .expect(403);
+    .expect(400);
 });
