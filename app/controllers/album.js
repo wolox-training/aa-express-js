@@ -24,3 +24,16 @@ exports.getPhotoOfAlbum = (req, res, next) => {
       next(err);
     });
 };
+
+exports.buyAlbum = (req, res, next) => {
+  const albumId = req.params.id;
+  return albumService
+    .buyAlbum(albumId, req.decode.email)
+    .then(album => {
+      res.status(200).send(album);
+    })
+    .catch(err => {
+      log.error(err.message);
+      next(err);
+    });
+};
