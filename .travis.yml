@@ -6,11 +6,7 @@ node_js:
 sudo: true
 
 env:
-  - CXX=g++-4.8 NODE_ENV=testing
-  - SECRET_KEY='secret_key'
-  - ALBUMS_API_URL=https://jsonplaceholder.typicode.com
-  - PASSWORD_REGEX=^[a-zA-Z0-9]{8,}$
-  - EMAIL_REGEX=^[^@\s]*(@wolox\.com\.ar)$
+  - CXX=g++-4.8 NODE_ENV=testing SECRET_KEY='secret_key' ALBUMS_API_URL=https://jsonplaceholder.typicode.com PASSWORD_REGEX=^[a-zA-Z0-9]{8,}$ EMAIL_REGEX=^[^@\s]*(@wolox\.com\.ar)$
 addons:
   apt:
     sources:
