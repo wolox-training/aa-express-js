@@ -59,3 +59,18 @@ exports.buyAlbum = async (albumId, userEmail) => {
     throw e;
   }
 };
+
+exports.getAlbumsOfUser = async (userEmail, userId) => {
+  try {
+    const user = await db.users.find({ where: { id: userId } });
+    if (!user) {
+      throw errors.badRequest('User not exist');
+    }
+    if (!user.email !== userEmail && !user.admin) {
+      throw errors.forbiddenUser('You can not see albums from other users');
+    }
+    return user;
+  } catch (e) {
+    throw e;
+  }
+};
