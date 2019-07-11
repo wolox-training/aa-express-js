@@ -48,6 +48,9 @@ exports.loginUser = async body => {
       return jwt.sign({ email: body.email }, secretKey);
     });
   } catch (e) {
+    if (e.internalCode) {
+      throw e;
+    }
     throw errors.defaultError(e.message);
   }
 };
