@@ -1,5 +1,6 @@
 const userConfig = require('../../config').common.user;
 const errors = require('../errors');
+const log = require('../logger');
 
 exports.checkUserProperties = (req, res, next) => {
   const { body } = req;
@@ -10,6 +11,7 @@ exports.checkUserProperties = (req, res, next) => {
 };
 exports.validatePassword = (req, res, next) => {
   const { password } = req.body;
+  log.info(password);
   if (RegExp(userConfig.password_regex).test(password)) {
     return next();
   }
