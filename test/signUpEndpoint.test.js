@@ -71,87 +71,89 @@ const notLongEnoughPasswordQuery = {
   password: chance.string({ length: 3, pool: 'as!"7258369' })
 };
 
-test('Right Only One Creation User', async () => {
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(200);
-});
+describe('Sign Up', () => {
+  test('Right Only One Creation User', async () => {
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(200);
+  });
 
-test('Try To Create Two User With Equal Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(200);
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(400);
-});
+  test('Try To Create Two User With Equal Email', async () => {
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(200);
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(400);
+  });
 
-test('Try To Create Two User With Different Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(200);
-  await request(app)
-    .post('/users')
-    .send(secondRightQuery)
-    .expect(200);
-});
+  test('Try To Create Two User With Different Email', async () => {
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(200);
+    await request(app)
+      .post('/users')
+      .send(secondRightQuery)
+      .expect(200);
+  });
 
-test('Try To Create One User With Not Wolox Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(notWoloxEmailQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Wolox Email', async () => {
+    await request(app)
+      .post('/users')
+      .send(notWoloxEmailQuery)
+      .expect(400);
+  });
 
-test('Try To Create One User With Not Name', async () => {
-  await request(app)
-    .post('/users')
-    .send(notNameQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Name', async () => {
+    await request(app)
+      .post('/users')
+      .send(notNameQuery)
+      .expect(400);
+  });
 
-test('Try To Create One User With Not Last Name', async () => {
-  await request(app)
-    .post('/users')
-    .send(notLastNameQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Last Name', async () => {
+    await request(app)
+      .post('/users')
+      .send(notLastNameQuery)
+      .expect(400);
+  });
 
-test('Try To Create One User With Not Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(notEmailQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Email', async () => {
+    await request(app)
+      .post('/users')
+      .send(notEmailQuery)
+      .expect(400);
+  });
 
-test('Try To Create One User With Not Password', async () => {
-  await request(app)
-    .post('/users')
-    .send(notPasswordQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Password', async () => {
+    await request(app)
+      .post('/users')
+      .send(notPasswordQuery)
+      .expect(400);
+  });
 
-test('Try To Create One User With Not Valid Password', async () => {
-  await request(app)
-    .post('/users')
-    .send(notValidPasswordQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Valid Password', async () => {
+    await request(app)
+      .post('/users')
+      .send(notValidPasswordQuery)
+      .expect(400);
+  });
 
-test('Try To Create One User With Not Long Enough Password', async () => {
-  await request(app)
-    .post('/users')
-    .send(notLongEnoughPasswordQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Long Enough Password', async () => {
+    await request(app)
+      .post('/users')
+      .send(notLongEnoughPasswordQuery)
+      .expect(400);
+  });
 
-test('Try To Create One User With Not Format Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(notEmailFormatQuery)
-    .expect(400);
+  test('Try To Create One User With Not Format Email', async () => {
+    await request(app)
+      .post('/users')
+      .send(notEmailFormatQuery)
+      .expect(400);
+  });
 });
