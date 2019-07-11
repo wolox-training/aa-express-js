@@ -4,6 +4,7 @@ const errors = require('../errors'),
 const DEFAULT_STATUS_CODE = 500;
 
 const statusCodes = {
+  [errors.CONNECTION_ERROR]: 502,
   [errors.DATABASE_ERROR]: 503,
   [errors.DEFAULT_ERROR]: 500
 };
