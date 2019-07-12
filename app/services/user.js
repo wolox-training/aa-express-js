@@ -1,30 +1,25 @@
 const bcrypt = require('bcryptjs');
 
-const db = require('../models');
+const User = require('../models').users;
 const errors = require('../errors');
 const userConfig = require('../../config').common.user;
 const saltRounds = 10;
 
-exports.checkUserProperties = query => {
-  if (query.firstName && query.lastName && query.email && query.password) {
-    return true;
-  }
-  return false;
-};
+exports.checkUserProperties = query => query.firstName && query.lastName && query.email && query.password;
 exports.createUser = query => {
-  if (!this.checkUserProperties(query)) {
+  if (!exports.checkUserProperties(query)) {
     throw errors.badRequest('User atributte missing');
   }
-  if (!this.validatePassword(query.password)) {
+  if (!exports.validatePassword(query.password)) {
     throw errors.badRequest('Password is not valid');
   }
-  if (!this.validateEmail(query.email)) {
+  if (!exports.validateEmail(query.email)) {
     throw errors.badRequest('Email is not valid');
   }
   try {
     return bcrypt.hash(query.password, saltRounds).then(async hash => {
       try {
-        const result = await db.users.create({
+        const result = await User.create({
           firstName: query.firstName,
           lastName: query.lastName,
           email: query.email,
