@@ -69,7 +69,7 @@ exports.getUsers = async params => {
   const offset = page * size;
   const limit = size;
   try {
-    const result = await db.users.findAll({ offset, limit });
+    const result = await User.findAll({ offset, limit });
     return result;
   } catch (e) {
     e.internalCode = 'database_error';
