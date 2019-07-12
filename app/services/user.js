@@ -91,3 +91,26 @@ exports.getUsers = async params => {
     throw e;
   }
 };
+exports.getAlbumsOfUser = async (userEmail, userId, admin, getAlbum) => {
+  const albumsProm = [];
+  try {
+    const user = await db.users.find({ where: { id: userId } });
+    if (!user) {
+      throw errors.badRequest('User not exist');
+    }
+    if (user.email !== userEmail && !admin) {
+      throw errors.forbiddenUser('You can not see albums from other users');
+    }
+    const transactions = await db.albums_transactions.findAll({ where: { userId } });
+    transactions.forEach(transaction => {
+      const albumProm = getAlbum(transaction.albumId);
+      albumsProm.push(albumProm);
+    });
+    return Promise.all(albumsProm);
+  } catch (e) {
+    if (e.internalCode) {
+      throw e;
+    }
+    throw errors.defaultError(e.message);
+  }
+};
