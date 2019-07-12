@@ -1,8 +1,8 @@
-const albumService = require('../services/album');
+const albumsService = require('../services/album');
 const log = require('../logger');
 
 exports.getAlbums = (req, res, next) =>
-  albumService
+  albumsService
     .getAlbums()
     .then(albums => {
       res.status(200).send(albums);
@@ -14,7 +14,7 @@ exports.getAlbums = (req, res, next) =>
 
 exports.getPhotoOfAlbum = (req, res, next) => {
   const albumId = req.params.id;
-  return albumService
+  return albumsService
     .getPhotosOfAlbum(albumId)
     .then(photos => {
       res.status(200).send(photos);
@@ -27,7 +27,7 @@ exports.getPhotoOfAlbum = (req, res, next) => {
 
 exports.buyAlbum = (req, res, next) => {
   const albumId = req.params.id;
-  return albumService
+  return albumsService
     .buyAlbum(albumId, req.decode.email)
     .then(album => {
       res.status(200).send(album);

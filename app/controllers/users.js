@@ -1,9 +1,9 @@
-const userService = require('../services/user');
+const usersService = require('../services/user');
 const albumsService = require('../services/album');
 const log = require('../logger');
 
 exports.addUser = (req, res, next) =>
-  userService
+  usersService
     .createUser(req.body)
     .then(result => {
       log.info(`User created first name: ${result.firstName}, last name: ${result.lastName}`);
@@ -20,7 +20,7 @@ exports.addUser = (req, res, next) =>
       return next(err);
     });
 exports.loginUser = (req, res, next) =>
-  userService
+  usersService
     .loginUser(req.body)
     .then(token => {
       res
@@ -33,7 +33,7 @@ exports.loginUser = (req, res, next) =>
       return next(err);
     });
 exports.getUsers = (req, res, next) =>
-  userService
+  usersService
     .getUsers(req.query)
     .then(users => res.status(200).send(users))
     .catch(err => {
@@ -42,7 +42,7 @@ exports.getUsers = (req, res, next) =>
     });
 exports.getAlbumsOfUser = (req, res, next) => {
   const userId = req.params.id;
-  return userService
+  return usersService
     .getAlbumsOfUser(req.decode.email, userId, req.decode.admin, albumsService.getAlbum)
     .then(albums => {
       res.status(200).send(albums);
