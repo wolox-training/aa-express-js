@@ -32,7 +32,7 @@ exports.loginUser = (req, res, next) =>
       return next(err);
     });
 exports.getUsers = (req, res, next) =>
-  services
+  usersService
     .getUsers(req.query)
     .then(users => res.status(200).send(users))
     .catch(err => {
