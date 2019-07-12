@@ -27,7 +27,7 @@ exports.getPhotoOfAlbum = (req, res, next) => {
 
 exports.buyAlbum = (req, res, next) => {
   const albumId = req.params.id;
-  return albumService
+  return albumsService
     .buyAlbum(albumId, req.decode.email)
     .then(album => {
       res.status(200).send(album);

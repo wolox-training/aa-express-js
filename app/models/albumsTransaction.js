@@ -2,13 +2,6 @@ module.exports = (sequelize, DataTypes) => {
   const AlbumsTransaction = sequelize.define(
     'albums_transactions',
     {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        unique: true,
-        type: DataTypes.INTEGER
-      },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
