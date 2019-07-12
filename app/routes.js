@@ -21,6 +21,7 @@ exports.init = app => {
     [userMiddle.validateEmail, userMiddle.validatePassword],
     userController.loginUser
   );
+  app.get('/users/:id/albums', [securityMiddle.checkToken], userController.getAlbumsOfUser);
   app.post(
     '/admin/users',
     [
