@@ -115,3 +115,21 @@ exports.getAlbumsOfUser = async (userEmail, userId, admin, getAlbum) => {
     throw errors.defaultError(e.message);
   }
 };
+exports.getPhotosOfAlbums = async (userEmail, albumId, getPhotosOfAlbum) => {
+  try {
+    const user = await User.find({ where: { email: userEmail } });
+    if (!user) {
+      throw errors.badRequest('User not exist');
+    }
+    const transaction = await AlbumTransaction.find({ where: { userId: user.id, albumId } });
+    if (!transaction) {
+      throw errors.badRequest('You did not buy this album');
+    }
+    return getPhotosOfAlbum(albumId);
+  } catch (e) {
+    if (e.internalCode) {
+      throw e;
+    }
+    throw errors.defaultError(e.message);
+  }
+};

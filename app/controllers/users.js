@@ -52,3 +52,15 @@ exports.getAlbumsOfUser = (req, res, next) => {
       next(err);
     });
 };
+exports.getPhotosOfAlbum = (req, res, next) => {
+  const albumId = req.params.id;
+  return usersService
+    .getPhotosOfAlbums(req.decode.email, albumId, albumsService.getPhotosOfAlbum)
+    .then(photos => {
+      res.status(200).send(photos);
+    })
+    .catch(err => {
+      log.error(err.message);
+      next(err);
+    });
+};
