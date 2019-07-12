@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const errors = require('../errors');
-const db = require('../models');
+const User = require('../models').users;
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
 
@@ -10,7 +10,7 @@ exports.createUser = query => {
   try {
     return bcrypt.hash(query.password, saltRounds).then(async hash => {
       try {
-        const result = await db.users.create({
+        const result = await User.create({
           firstName: query.firstName,
           lastName: query.lastName,
           email: query.email,
@@ -33,7 +33,7 @@ exports.loginUser = async body => {
     throw errors.badRequest('Missing attribute');
   }
   try {
-    const result = await db.users.findAll({
+    const result = await User.findAll({
       where: {
         email: body.email
       }
