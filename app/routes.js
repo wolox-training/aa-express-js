@@ -22,6 +22,7 @@ exports.init = app => {
     userController.loginUser
   );
   app.get('/users/:id/albums', [securityMiddle.checkToken], userController.getAlbumsOfUser);
+  app.get('/users/albums/:id/photos', [securityMiddle.checkToken], userController.getPhotosOfAlbum);
   app.post(
     '/admin/users',
     [
