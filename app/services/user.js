@@ -10,7 +10,7 @@ exports.createAdminUser = async body => {
   try {
     let result = await User.find({ where: { email: body.email } });
     if (!result) {
-      result = await this.createUser(body);
+      result = await exports.createUser(body);
     }
     return result.update({ admin: true });
   } catch (e) {
