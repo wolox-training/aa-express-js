@@ -25,7 +25,8 @@ exports.createUser = body => {
           firstName: body.firstName,
           lastName: body.lastName,
           email: body.email,
-          password: hash
+          password: hash,
+          admin: false
         });
         return result;
       } catch (e) {
@@ -47,7 +48,7 @@ exports.loginUser = async body => {
     throw errors.badRequest('Missing attribute');
   }
   try {
-    const result = await User.findAll({
+    const result = await User.find({
       where: {
         email: body.email
       }
