@@ -2,13 +2,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const errors = require('../errors');
-const db = require('../models');
+const User = require('../models').users;
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
 
 exports.createAdminUser = async body => {
   try {
-    let result = await db.users.find({ where: { email: body.email } });
+    let result = await User.find({ where: { email: body.email } });
     if (!result) {
       result = await this.createUser(body);
     }
@@ -21,12 +21,11 @@ exports.createUser = body => {
   try {
     return bcrypt.hash(body.password, saltRounds).then(async hash => {
       try {
-        const result = await db.users.create({
+        const result = await User.create({
           firstName: body.firstName,
           lastName: body.lastName,
           email: body.email,
-          password: hash,
-          admin: false
+          password: hash
         });
         return result;
       } catch (e) {
@@ -48,7 +47,7 @@ exports.loginUser = async body => {
     throw errors.badRequest('Missing attribute');
   }
   try {
-    const result = await db.users.find({
+    const result = await User.findAll({
       where: {
         email: body.email
       }
@@ -84,7 +83,7 @@ exports.getUsers = async params => {
   const offset = page * size;
   const limit = size;
   try {
-    const result = await db.users.findAll({ offset, limit });
+    const result = await User.findAll({ offset, limit });
     return result;
   } catch (e) {
     e.internalCode = 'database_error';
