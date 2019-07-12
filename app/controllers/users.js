@@ -1,8 +1,8 @@
-const usersServices = require('../services/user');
+const usersService = require('../services/user');
 const log = require('../logger');
 
 exports.addUser = (req, res, next) =>
-  usersServices
+  usersService
     .createUser(req.body)
     .then(result => {
       log.info(`User created first name: ${result.firstName}, last name: ${result.lastName}`);
