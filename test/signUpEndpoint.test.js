@@ -75,14 +75,14 @@ test('Right Only One Creation User', async () => {
   await request(app)
     .post('/users')
     .send(firstRightQuery)
-    .expect(200);
+    .expect(201);
 });
 
 test('Try To Create Two User With Equal Email', async () => {
   await request(app)
     .post('/users')
     .send(firstRightQuery)
-    .expect(200);
+    .expect(201);
   await request(app)
     .post('/users')
     .send(firstRightQuery)
@@ -93,11 +93,11 @@ test('Try To Create Two User With Different Email', async () => {
   await request(app)
     .post('/users')
     .send(firstRightQuery)
-    .expect(200);
+    .expect(201);
   await request(app)
     .post('/users')
     .send(secondRightQuery)
-    .expect(200);
+    .expect(201);
 });
 
 test('Try To Create One User With Not Wolox Email', async () => {
