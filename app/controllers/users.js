@@ -1,8 +1,8 @@
-const services = require('../services/user');
+const usersService = require('../services/user');
 const log = require('../logger');
 
 exports.addUser = (req, res, next) =>
-  services
+  usersService
     .createUser(req.body)
     .then(result => {
       log.info(`User created first name: ${result.firstName}, last name: ${result.lastName}`);
@@ -19,7 +19,7 @@ exports.addUser = (req, res, next) =>
       return next(err);
     });
 exports.loginUser = (req, res, next) =>
-  services
+  usersService
     .loginUser(req.body)
     .then(token => {
       res
@@ -32,7 +32,7 @@ exports.loginUser = (req, res, next) =>
       return next(err);
     });
 exports.getUsers = (req, res, next) =>
-  services
+  usersService
     .getUsers(req.query)
     .then(users => res.status(200).send(users))
     .catch(err => {
