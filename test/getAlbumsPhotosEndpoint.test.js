@@ -4,24 +4,11 @@ const Chance = require('chance');
 const app = require('../app');
 
 const chance = new Chance();
-jest.mock('../app/services/album', () => ({
-  getPhotosOfAlbum: jest.fn(() => [
-    {
-      albumId: 4,
-      id: 151,
-      title: 'possimus dolor minima provident ipsam',
-      url: 'https://via.placeholder.com/600/1d2ad4',
-      thumbnailUrl: 'https://via.placeholder.com/150/1d2ad4'
-    },
-    {
-      albumId: 4,
-      id: 152,
-      title: 'et accusantium enim pariatur eum nihil fugit',
-      url: 'https://via.placeholder.com/600/a01c5b',
-      thumbnailUrl: 'https://via.placeholder.com/150/a01c5b'
-    }
-  ])
-}));
+
+const fetchMock = require('./__mocks__/node-fetch');
+const { photosFetch } = require('./__mocks__/photosFetch');
+const mockAlbumPhotos = require('./__mocks__/photosFetch').albumPhotos;
+fetchMock.get('begin:https://jsonplaceholder.typicode.com/photos', photosFetch);
 
 const firstRightQuery = {
   firstName: chance.first(),
@@ -53,6 +40,62 @@ describe('Get Photo Of An Album Bougth', () => {
       .set('token', user.body.token)
       .send()
       .expect(200);
-    console.log(album);
+    expect(album.body).toMatchObject(mockAlbumPhotos[1]);
+  });
+  test('Try To Get Photos Of Album Not Bought', async () => {
+    const user = await request(app)
+      .post('/users/sessions')
+      .send(firstRightQuery)
+      .expect(200);
+    await request(app)
+      .post('/albums/2')
+      .set('token', user.body.token)
+      .send()
+      .expect(200);
+    await request(app)
+      .get('/users/albums/1/photos')
+      .set('token', user.body.token)
+      .send()
+      .expect(400);
+  });
+  test('Correct Get Photo From More Than One Album', async () => {
+    let album = [];
+    const user = await request(app)
+      .post('/users/sessions')
+      .send(firstRightQuery)
+      .expect(200);
+    await request(app)
+      .post('/albums/1')
+      .set('token', user.body.token)
+      .send()
+      .expect(200);
+    await request(app)
+      .post('/albums/2')
+      .set('token', user.body.token)
+      .send()
+      .expect(200);
+    await request(app)
+      .post('/albums/4')
+      .set('token', user.body.token)
+      .send()
+      .expect(200);
+    album = await request(app)
+      .get('/users/albums/1/photos')
+      .set('token', user.body.token)
+      .send()
+      .expect(200);
+    expect(album.body).toMatchObject(mockAlbumPhotos[1]);
+    album = await request(app)
+      .get('/users/albums/2/photos')
+      .set('token', user.body.token)
+      .send()
+      .expect(200);
+    expect(album.body).toMatchObject(mockAlbumPhotos[2]);
+    album = await request(app)
+      .get('/users/albums/4/photos')
+      .set('token', user.body.token)
+      .send()
+      .expect(200);
+    expect(album.body).toMatchObject(mockAlbumPhotos[4]);
   });
 });
