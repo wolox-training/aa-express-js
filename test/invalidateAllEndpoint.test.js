@@ -12,7 +12,13 @@ const firstRightQuery = {
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
-describe('Buy An Album', () => {
+function sleep(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+describe('Invalidate All Tokens', () => {
   beforeEach(async done => {
     await request(app)
       .post('/users')
@@ -20,41 +26,34 @@ describe('Buy An Album', () => {
       .expect(200);
     done();
   });
-  test('Correct Buy Of An Album', async () => {
-    const res = await request(app)
+  test('Invalidate Tokens', async () => {
+    let res = await request(app)
       .post('/users/sessions')
       .send(firstRightQuery)
       .expect(200);
-    await request(app)
-      .post('/albums/1')
-      .set('token', res.body.token)
-      .send()
-      .expect(200);
-  });
-  test('Try Buy The Same Album Again', async () => {
-    const res = await request(app)
-      .post('/users/sessions')
-      .send(firstRightQuery)
-      .expect(200);
+    await sleep(1000);
     await request(app)
       .post('/albums/1')
       .set('token', res.body.token)
       .send()
       .expect(200);
     await request(app)
-      .post('/albums/1')
+      .post('/users/sessions/invalidate_all')
+      .send()
+      .expect(200);
+    await request(app)
+      .post('/albums/2')
       .set('token', res.body.token)
       .send()
-      .expect(400);
-  });
-  test('Try Buy An Album Without Credential', async () => {
-    await request(app)
+      .expect(403);
+    res = await request(app)
       .post('/users/sessions')
       .send(firstRightQuery)
       .expect(200);
     await request(app)
-      .post('/albums/1')
+      .post('/albums/2')
+      .set('token', res.body.token)
       .send()
-      .expect(400);
+      .expect(200);
   });
 });
