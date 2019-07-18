@@ -1,9 +1,7 @@
 const request = require('supertest');
-const Chance = require('chance');
+const chance = require('chance')();
 
 const app = require('../app');
-
-const chance = new Chance();
 
 const firstRightQuery = {
   firstName: chance.first(),
@@ -71,87 +69,98 @@ const notLongEnoughPasswordQuery = {
   password: chance.string({ length: 3, pool: 'as!"7258369' })
 };
 
-test('Right Only One Creation User', async () => {
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(201);
-});
+describe('Test sign up endpoint', () => {
+  test('Right Only One Creation User', async () => {
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(201);
+  });
 
-test('Try To Create Two User With Equal Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(201);
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(400);
-});
+  test('Try To Create Two User With Equal Email', async () => {
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(201);
+    const res = await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(400);
+    expect(res.body.message).toBe('Validation error');
+  });
 
-test('Try To Create Two User With Different Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(201);
-  await request(app)
-    .post('/users')
-    .send(secondRightQuery)
-    .expect(201);
-});
+  test('Try To Create Two User With Different Email', async () => {
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(201);
+    await request(app)
+      .post('/users')
+      .send(secondRightQuery)
+      .expect(201);
+  });
 
-test('Try To Create One User With Not Wolox Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(notWoloxEmailQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Wolox Email', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notWoloxEmailQuery)
+      .expect(400);
+    expect(res.body.message).toBe('Email is not valid');
+  });
 
-test('Try To Create One User With Not Name', async () => {
-  await request(app)
-    .post('/users')
-    .send(notNameQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Name', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notNameQuery)
+      .expect(400);
+    expect(res.body.message).toBe('User atributte missing');
+  });
 
-test('Try To Create One User With Not Last Name', async () => {
-  await request(app)
-    .post('/users')
-    .send(notLastNameQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Last Name', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notLastNameQuery)
+      .expect(400);
+    expect(res.body.message).toBe('User atributte missing');
+  });
 
-test('Try To Create One User With Not Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(notEmailQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Email', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notEmailQuery)
+      .expect(400);
+    expect(res.body.message).toBe('User atributte missing');
+  });
 
-test('Try To Create One User With Not Password', async () => {
-  await request(app)
-    .post('/users')
-    .send(notPasswordQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Password', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notPasswordQuery)
+      .expect(400);
+    expect(res.body.message).toBe('User atributte missing');
+  });
 
-test('Try To Create One User With Not Valid Password', async () => {
-  await request(app)
-    .post('/users')
-    .send(notValidPasswordQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Valid Password', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notValidPasswordQuery)
+      .expect(400);
+    expect(res.body.message).toBe('Password is not valid');
+  });
 
-test('Try To Create One User With Not Long Enough Password', async () => {
-  await request(app)
-    .post('/users')
-    .send(notLongEnoughPasswordQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Long Enough Password', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notLongEnoughPasswordQuery)
+      .expect(400);
+    expect(res.body.message).toBe('Password is not valid');
+  });
 
-test('Try To Create One User With Not Format Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(notEmailFormatQuery)
-    .expect(400);
+  test('Try To Create One User With Not Format Email', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notEmailFormatQuery)
+      .expect(400);
+    expect(res.body.message).toBe('Email is not valid');
+  });
 });
