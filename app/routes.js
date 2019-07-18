@@ -23,6 +23,7 @@ exports.init = app => {
   );
   app.get('/users/:id/albums', [securityMiddle.checkToken], userController.getAlbumsOfUser);
   app.get('/users/albums/:id/photos', [securityMiddle.checkToken], userController.getPhotosOfAlbum);
+  app.post('/users/sessions/invalidate_all', userController.invalidateAllTokens);
   app.post(
     '/admin/users',
     [

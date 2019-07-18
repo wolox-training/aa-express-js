@@ -22,12 +22,12 @@ exports.addUser = (req, res, next) =>
 exports.loginUser = (req, res, next) =>
   usersService
     .loginUser(req.body)
-    .then(token => {
+    .then(token =>
       res
         .json({ token })
         .status(201)
-        .send();
-    })
+        .send()
+    )
     .catch(err => {
       log.error(err.message);
       return next(err);
@@ -44,23 +44,27 @@ exports.getAlbumsOfUser = (req, res, next) => {
   const userId = req.params.id;
   return usersService
     .getAlbumsOfUser(req.decode.email, userId, req.decode.admin, albumsService.getAlbum)
-    .then(albums => {
-      res.status(200).send(albums);
-    })
+    .then(albums => res.status(200).send(albums))
     .catch(err => {
       log.error(err.message);
-      next(err);
+      return next(err);
     });
 };
 exports.getPhotosOfAlbum = (req, res, next) => {
   const albumId = req.params.id;
   return usersService
     .getPhotosOfAlbums(req.decode.email, albumId, albumsService.getPhotosOfAlbum)
-    .then(photos => {
-      res.status(200).send(photos);
-    })
+    .then(photos => res.status(200).send(photos))
     .catch(err => {
       log.error(err.message);
-      next(err);
+      return next(err);
     });
 };
+exports.invalidateAllTokens = (req, res, next) =>
+  usersService
+    .invalidateAllTokens()
+    .then(() => res.status(200).send())
+    .catch(err => {
+      log.error(err.message);
+      return next(err);
+    });

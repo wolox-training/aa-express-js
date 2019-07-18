@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 
 const errors = require('../errors');
 const User = require('../models').users;
@@ -49,7 +50,7 @@ exports.loginUser = async body => {
     throw errors.badRequest('Missing attribute');
   }
   try {
-    const result = await User.find({
+    const result = await User.findOne({
       where: {
         email: body.email
       }
@@ -57,11 +58,15 @@ exports.loginUser = async body => {
     if (!result) {
       throw errors.badRequest('User not found');
     }
-    return bcrypt.compare(body.password, result.password).then(res => {
+    return bcrypt.compare(body.password, result.password).then(async res => {
       if (!res) {
         throw errors.badRequest('Wrong password');
       }
-      return jwt.sign({ email: result.email, admin: result.admin }, secretKey);
+      await result.update({ timestampTokenCreation: moment().format() });
+      return jwt.sign(
+        { email: result.email, admin: result.admin, tokenCreation: moment().format() },
+        secretKey
+      );
     });
   } catch (e) {
     if (e.internalCode) {
@@ -85,8 +90,7 @@ exports.getUsers = async params => {
   const offset = page * size;
   const limit = size;
   try {
-    const result = await User.findAll({ offset, limit });
-    return result;
+    return await User.findAll({ offset, limit });
   } catch (e) {
     e.internalCode = 'database_error';
     throw e;
@@ -131,5 +135,13 @@ exports.getPhotosOfAlbums = async (userEmail, albumId, getPhotosOfAlbum) => {
       throw e;
     }
     throw errors.defaultError(e.message);
+  }
+};
+
+exports.invalidateAllTokens = async () => {
+  try {
+    return await User.update({ timestampTokenCreation: moment().format() }, { where: {} });
+  } catch (e) {
+    throw errors.databaseError(e.message);
   }
 };
