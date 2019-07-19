@@ -18,7 +18,7 @@ function sleep(ms) {
   });
 }
 
-describe('Invalidate All Tokens', () => {
+describe('Token Expiration', () => {
   beforeEach(async done => {
     await request(app)
       .post('/users')
@@ -26,7 +26,7 @@ describe('Invalidate All Tokens', () => {
       .expect(200);
     done();
   });
-  test('Invalidate Tokens', async () => {
+  test('Token Has Expired', async () => {
     let res = await request(app)
       .post('/users/sessions')
       .send(firstRightQuery)
@@ -36,16 +36,13 @@ describe('Invalidate All Tokens', () => {
       .set('token', res.body.token)
       .send()
       .expect(200);
-    await sleep(1000);
-    await request(app)
-      .post('/users/sessions/invalidate_all')
-      .send()
-      .expect(200);
-    await request(app)
+    await sleep(4000);
+    res = await request(app)
       .post('/albums/2')
       .set('token', res.body.token)
       .send()
       .expect(403);
+    expect(res.body.message).toBe('jwt expired');
     res = await request(app)
       .post('/users/sessions')
       .send(firstRightQuery)
