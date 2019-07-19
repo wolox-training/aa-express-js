@@ -6,6 +6,7 @@ const errors = require('../errors');
 const User = require('../models').users;
 const AlbumTransaction = require('../models').albums_transactions;
 const secretKey = require('../../config').common.jwt.secret_key;
+const expirationTime = require('../../config').common.jwt.expiration_time;
 const saltRounds = 10;
 
 exports.createAdminUser = async body => {
@@ -63,10 +64,7 @@ exports.loginUser = async body => {
         throw errors.badRequest('Wrong password');
       }
       await result.update({ timestampTokenCreation: moment().format() });
-      return jwt.sign(
-        { email: result.email, admin: result.admin, tokenCreation: moment().format() },
-        secretKey
-      );
+      return jwt.sign({ email: result.email, admin: result.admin }, secretKey, { expiresIn: expirationTime });
     });
   } catch (e) {
     if (e.internalCode) {

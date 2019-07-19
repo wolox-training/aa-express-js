@@ -47,7 +47,8 @@ const config = {
       api_url: process.env.ALBUMS_API_URL
     },
     jwt: {
-      secret_key: process.env.SECRET_KEY
+      secret_key: process.env.SECRET_KEY,
+      expiration_time: process.env.EXPIRATION_TIME
     },
     user: {
       password_regex: process.env.PASSWORD_REGEX,
