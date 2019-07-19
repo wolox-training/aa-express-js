@@ -1,27 +1,28 @@
 language: node_js
 
 node_js:
-  - '10.14.1'
+    - '10.14.1'
 
 sudo: true
 
 env:
-  global:
-    - CXX=g++-4.8 NODE_ENV=testing
-    - SECRET_KEY='secret_key'
-    - ALBUMS_API_URL="https://jsonplaceholder.typicode.com"
-    - PASSWORD_REGEX="^[a-zA-Z0-9]{8,}$"
-    - EMAIL_REGEX="^[^@\s]*(@wolox\.com\.ar)$"
+    global:
+        - CXX=g++-4.8 NODE_ENV=testing
+        - SECRET_KEY='secret_key'
+        - ALBUMS_API_URL="https://jsonplaceholder.typicode.com"
+        - PASSWORD_REGEX="^[a-zA-Z0-9]{8,}$"
+        - EMAIL_REGEX="^[^@\s]*(@wolox\.com\.ar)$"
+        - EXPIRATION_TIME='3s'
 addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - g++-4.8
 
 services:
-  - postgresql
+    - postgresql
 
 before_script:
-  - psql -c "CREATE DATABASE bookstest;" -U postgres
-  - npm run migrations-test
+    - psql -c "CREATE DATABASE bookstest;" -U postgres
+    - npm run migrations-test
