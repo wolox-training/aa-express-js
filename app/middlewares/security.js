@@ -11,8 +11,7 @@ exports.checkToken = async (req, res, next) => {
       return next(errors.badRequest('Not token provided'));
     }
     const decode = jwt.verify(token, secretKey);
-    const valid = await securityService.validateToken(decode);
-    if (valid) {
+    if (await securityService.validateToken(decode)) {
       req.decode = decode;
       return next();
     }
