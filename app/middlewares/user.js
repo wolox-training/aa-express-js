@@ -1,31 +1,27 @@
-const userConfig = require('../../config').common.user;
-const errors = require('../errors');
+const { check } = require('express-validator');
 
-exports.checkAttributeMissing = value => {
+const userConfig = require('../../config').common.user;
+
+const checkAttributesMissing = value => {
   if (!value) {
     return Promise.reject(new Error('User attribute missing'));
   }
   return Promise.resolve();
 };
 
-exports.checkUserProperties = (req, res, next) => {
-  const { body } = req;
-  if (body.firstName && body.lastName && body.email && body.password) {
-    return next();
-  }
-  return next(errors.badRequest('User attribute missing'));
-};
-exports.validatePassword = (req, res, next) => {
-  const { password } = req.body;
-  if (RegExp(userConfig.password_regex).test(password)) {
-    return next();
-  }
-  return next(errors.badRequest('Not valid password'));
-};
-exports.validateEmail = (req, res, next) => {
-  const { email } = req.body;
-  if (RegExp(userConfig.email_regex).test(email)) {
-    return next();
-  }
-  return next(errors.badRequest('Not valid email'));
-};
+exports.createUser = [
+  check('firstName').custom(checkAttributesMissing),
+  check('lastName').custom(checkAttributesMissing),
+  check('email')
+    .custom(checkAttributesMissing)
+    .isEmail()
+    .withMessage('Not valid email')
+    .contains(userConfig.email_domain)
+    .withMessage('Not wolox email'),
+  check('password')
+    .custom(checkAttributesMissing)
+    .isAlphanumeric()
+    .withMessage('Not alphanumeric password')
+    .isLength({ min: userConfig.password_length })
+    .withMessage('Not long enough password')
+];
