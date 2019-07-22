@@ -36,13 +36,18 @@ exports.createUser = [
 
 exports.loginUser = [
   check('email')
+    .exists()
+    .withMessage('Email attribute is missing')
     .isEmail()
     .withMessage('Not valid email')
     .contains(userConfig.email_domain)
     .withMessage('Not wolox email'),
   check('password')
+    .exists()
+    .withMessage('Password attribute is missing')
     .isAlphanumeric()
     .withMessage('Not alphanumeric password')
     .isLength({ min: userConfig.password_length })
-    .withMessage('Not long enough password')
+    .withMessage('Not long enough password'),
+  exports.validate
 ];
