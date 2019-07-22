@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const errors = require('../errors');
 const User = require('../models').users;
+const errors = require('../errors');
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
 

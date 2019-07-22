@@ -1,4 +1,5 @@
-// const controller = require('./controllers/controller');
+const { check } = require('express-validator');
+
 const { healthCheck } = require('./controllers/healthCheck');
 const albumsController = require('./controllers/album.js');
 const userController = require('./controllers/users');
@@ -9,7 +10,19 @@ exports.init = app => {
   app.get('/albums/:id/photos', albumsController.getPhotoOfAlbum);
   app.post(
     '/users',
-    [userMiddle.checkUserProperties, userMiddle.validateEmail, userMiddle.validatePassword],
+    [
+      userMiddle.checkUserProperties,
+      check('email')
+        .isEmail()
+        .withMessage('Not valid email')
+        .contains('@wolox.com.ar')
+        .withMessage('Not wolox email'),
+      check('password')
+        .isAlphanumeric()
+        .withMessage('Not alphanumeric password')
+        .isLength({ min: 8 })
+        .withMessage('Not long enough password')
+    ],
     userController.addUser
   );
   app.post(
