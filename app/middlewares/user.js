@@ -25,3 +25,18 @@ exports.createUser = [
     .isLength({ min: userConfig.password_length })
     .withMessage('Not long enough password')
 ];
+
+exports.loginUser = [
+  check('email')
+    .custom(checkAttributesMissing)
+    .isEmail()
+    .withMessage('Not valid email')
+    .contains(userConfig.email_domain)
+    .withMessage('Not wolox email'),
+  check('password')
+    .custom(checkAttributesMissing)
+    .isAlphanumeric()
+    .withMessage('Not alphanumeric password')
+    .isLength({ min: userConfig.password_length })
+    .withMessage('Not long enough password')
+];

@@ -23,8 +23,12 @@ exports.addUser = (req, res, next) => {
     });
 };
 
-exports.loginUser = (req, res, next) =>
-  usersService
+exports.loginUser = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(errorsDefinition.badRequest(errors.array()[0].msg));
+  }
+  return usersService
     .loginUser(req.body)
     .then(token => {
       res
@@ -36,3 +40,4 @@ exports.loginUser = (req, res, next) =>
       log.error(err.message);
       return next(err);
     });
+};
