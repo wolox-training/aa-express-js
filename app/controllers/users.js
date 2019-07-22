@@ -6,7 +6,7 @@ const errorsDefinition = require('../errors');
 exports.addUser = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    next(errorsDefinition.badRequest(errors.array()[0].msg));
+    return next(errorsDefinition.badRequest(errors.array()[0].msg));
   }
   return usersService
     .createUser(req.body)
