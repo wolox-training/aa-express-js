@@ -33,13 +33,13 @@ const notEmailFormatQuery = {
 
 const notNameQuery = {
   lastName: chance.last(),
-  email: chance.string(),
+  email: chance.email({ domain: 'wolox.com.ar' }),
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
 const notLastNameQuery = {
   firstName: chance.first(),
-  email: chance.string(),
+  email: chance.email({ domain: 'wolox.com.ar' }),
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
@@ -52,7 +52,7 @@ const notEmailQuery = {
 const notPasswordQuery = {
   firstName: chance.first(),
   lastName: chance.last(),
-  email: chance.string()
+  email: chance.email({ domain: 'wolox.com.ar' })
 };
 
 const notValidPasswordQuery = {
@@ -66,7 +66,7 @@ const notLongEnoughPasswordQuery = {
   firstName: chance.first(),
   lastName: chance.last(),
   email: chance.email({ domain: 'wolox.com.ar' }),
-  password: chance.string({ length: 3, pool: 'as!"7258369' })
+  password: chance.string({ length: 3, pool: 'as7258369' })
 };
 
 describe('Test sign up endpoint', () => {
@@ -105,7 +105,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notWoloxEmailQuery)
       .expect(400);
-    expect(res.body.message).toBe('Not valid email');
+    expect(res.body.message).toBe('Not wolox email');
   });
 
   test('Try To Create One User With Not Name', async () => {
@@ -145,7 +145,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notValidPasswordQuery)
       .expect(400);
-    expect(res.body.message).toBe('Not valid password');
+    expect(res.body.message).toBe('Not alphanumeric password');
   });
 
   test('Try To Create One User With Not Long Enough Password', async () => {
@@ -153,7 +153,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notLongEnoughPasswordQuery)
       .expect(400);
-    expect(res.body.message).toBe('Not valid password');
+    expect(res.body.message).toBe('Not long enough password');
   });
 
   test('Try To Create One User With Not Format Email', async () => {
