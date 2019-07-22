@@ -27,7 +27,18 @@ exports.init = app => {
   );
   app.post(
     '/users/sessions',
-    [userMiddle.validateEmail, userMiddle.validatePassword],
+    [
+      check('email')
+        .isEmail()
+        .withMessage('Not valid email')
+        .contains('@wolox.com.ar')
+        .withMessage('Not wolox email'),
+      check('password')
+        .isAlphanumeric()
+        .withMessage('Not alphanumeric password')
+        .isLength({ min: 8 })
+        .withMessage('Not long enough password')
+    ],
     userController.loginUser
   );
   // app.get('/endpoint/get/path', [], controller.methodGET);
