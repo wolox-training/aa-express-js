@@ -11,13 +11,16 @@ exports.init = app => {
   app.post(
     '/users',
     [
-      userMiddle.checkUserProperties,
+      check('firstName').custom(userMiddle.checkAttributeMissing),
+      check('lastName').custom(userMiddle.checkAttributeMissing),
       check('email')
+        .custom(userMiddle.checkAttributeMissing)
         .isEmail()
         .withMessage('Not valid email')
         .contains('@wolox.com.ar')
         .withMessage('Not wolox email'),
       check('password')
+        .custom(userMiddle.checkAttributeMissing)
         .isAlphanumeric()
         .withMessage('Not alphanumeric password')
         .isLength({ min: 8 })
@@ -29,11 +32,13 @@ exports.init = app => {
     '/users/sessions',
     [
       check('email')
+        .custom(userMiddle.checkAttributeMissing)
         .isEmail()
         .withMessage('Not valid email')
         .contains('@wolox.com.ar')
         .withMessage('Not wolox email'),
       check('password')
+        .custom(userMiddle.checkAttributeMissing)
         .isAlphanumeric()
         .withMessage('Not alphanumeric password')
         .isLength({ min: 8 })

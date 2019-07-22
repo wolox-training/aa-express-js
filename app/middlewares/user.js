@@ -1,6 +1,13 @@
 const userConfig = require('../../config').common.user;
 const errors = require('../errors');
 
+exports.checkAttributeMissing = value => {
+  if (!value) {
+    return Promise.reject(new Error('User attribute missing'));
+  }
+  return Promise.resolve();
+};
+
 exports.checkUserProperties = (req, res, next) => {
   const { body } = req;
   if (body.firstName && body.lastName && body.email && body.password) {
