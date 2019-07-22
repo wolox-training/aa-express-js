@@ -105,7 +105,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notWoloxEmailQuery)
       .expect(400);
-    expect(res.body.message).toBe('Not wolox email');
+    expect(res.body.message[0]).toBe('Not wolox email');
   });
 
   test('Try To Create One User With Not Name', async () => {
@@ -113,7 +113,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notNameQuery)
       .expect(400);
-    expect(res.body.message).toBe('User attribute missing');
+    expect(res.body.message[0]).toBe('First name attribute is missing');
   });
 
   test('Try To Create One User With Not Last Name', async () => {
@@ -121,7 +121,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notLastNameQuery)
       .expect(400);
-    expect(res.body.message).toBe('User attribute missing');
+    expect(res.body.message[0]).toBe('Last name attribute is missing');
   });
 
   test('Try To Create One User With Not Email', async () => {
@@ -129,7 +129,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notEmailQuery)
       .expect(400);
-    expect(res.body.message).toBe('User attribute missing');
+    expect(res.body.message[0]).toBe('Email attribute is missing');
   });
 
   test('Try To Create One User With Not Password', async () => {
@@ -137,7 +137,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notPasswordQuery)
       .expect(400);
-    expect(res.body.message).toBe('User attribute missing');
+    expect(res.body.message[0]).toBe('Password attribute is missing');
   });
 
   test('Try To Create One User With Not Valid Password', async () => {
@@ -145,7 +145,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notValidPasswordQuery)
       .expect(400);
-    expect(res.body.message).toBe('Not alphanumeric password');
+    expect(res.body.message[0]).toBe('Not alphanumeric password');
   });
 
   test('Try To Create One User With Not Long Enough Password', async () => {
@@ -153,7 +153,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notLongEnoughPasswordQuery)
       .expect(400);
-    expect(res.body.message).toBe('Not long enough password');
+    expect(res.body.message[0]).toBe('Not long enough password');
   });
 
   test('Try To Create One User With Not Format Email', async () => {
@@ -161,6 +161,6 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(notEmailFormatQuery)
       .expect(400);
-    expect(res.body.message).toBe('Not valid email');
+    expect(res.body.message[0]).toBe('Not valid email');
   });
 });
