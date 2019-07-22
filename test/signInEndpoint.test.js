@@ -31,7 +31,7 @@ test('Correct Log In', async () => {
   await request(app)
     .post('/users')
     .send(firstRightQuery)
-    .expect(200);
+    .expect(201);
   await request(app)
     .post('/users/sessions')
     .send(logInRightQuery)
@@ -42,20 +42,22 @@ test('Wrong Email Log In', async () => {
   await request(app)
     .post('/users')
     .send(firstRightQuery)
-    .expect(200);
-  await request(app)
+    .expect(201);
+  const res = await request(app)
     .post('/users/sessions')
     .send(logInWrongEmailQuery)
     .expect(400);
+  expect(res.body.message).toBe('User not found');
 });
 
 test('Wrong Password Log In', async () => {
   await request(app)
     .post('/users')
     .send(firstRightQuery)
-    .expect(200);
-  await request(app)
+    .expect(201);
+  const res = await request(app)
     .post('/users/sessions')
     .send(logInWrongPassQuery)
     .expect(400);
+  expect(res.body.message).toBe('Wrong password');
 });
