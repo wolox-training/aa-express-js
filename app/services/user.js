@@ -38,7 +38,7 @@ exports.loginUser = async body => {
     if (!result) {
       throw errors.notFound('User not found');
     }
-    return bcrypt.compare(body.password, result.password).then(res => {
+    return await bcrypt.compare(body.password, result.password).then(res => {
       if (!res) {
         throw errors.badRequest('Wrong password');
       }
