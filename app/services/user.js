@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const errors = require('../errors');
 const User = require('../models').users;
+const errors = require('../errors');
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
 
@@ -19,7 +19,7 @@ exports.createUser = query => {
         return result;
       } catch (e) {
         if (e.message === 'Validation error') {
-          throw errors.badRequest(e.message);
+          throw errors.badRequest('Email alredy exist');
         }
         throw errors.databaseError(e.message);
       }
@@ -29,19 +29,16 @@ exports.createUser = query => {
   }
 };
 exports.loginUser = async body => {
-  if (!body.email || !body.password) {
-    throw errors.badRequest('Missing attribute');
-  }
   try {
-    const result = await User.findAll({
+    const result = await User.findOne({
       where: {
         email: body.email
       }
     });
-    if (result.length === 0) {
-      throw errors.badRequest('User not found');
+    if (!result) {
+      throw errors.notFound('User not found');
     }
-    return bcrypt.compare(body.password, result[0].password).then(res => {
+    return await bcrypt.compare(body.password, result.password).then(res => {
       if (!res) {
         throw errors.badRequest('Wrong password');
       }

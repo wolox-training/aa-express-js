@@ -1,24 +1,53 @@
+const { check, validationResult } = require('express-validator');
+
 const userConfig = require('../../config').common.user;
 const errors = require('../errors');
 
-exports.checkUserProperties = (req, res, next) => {
-  const { body } = req;
-  if (body.firstName && body.lastName && body.email && body.password) {
-    return next();
+exports.validate = (req, res, next) => {
+  const errorsMessages = validationResult(req).array();
+  if (errorsMessages.length !== 0) {
+    return next(errors.badRequest(errorsMessages.map(error => error.msg)));
   }
-  return next(errors.badRequest('User attribute missing'));
+  return next();
 };
-exports.validatePassword = (req, res, next) => {
-  const { password } = req.body;
-  if (RegExp(userConfig.password_regex).test(password)) {
-    return next();
-  }
-  return next(errors.badRequest('Not valid password'));
-};
-exports.validateEmail = (req, res, next) => {
-  const { email } = req.body;
-  if (RegExp(userConfig.email_regex).test(email)) {
-    return next();
-  }
-  return next(errors.badRequest('Not valid email'));
-};
+exports.createUser = [
+  check('firstName')
+    .exists()
+    .withMessage('First name attribute is missing'),
+  check('lastName')
+    .exists()
+    .withMessage('Last name attribute is missing'),
+  check('email')
+    .exists()
+    .withMessage('Email attribute is missing')
+    .isEmail()
+    .withMessage('Not valid email')
+    .contains(userConfig.email_domain)
+    .withMessage('Not wolox email'),
+  check('password')
+    .exists()
+    .withMessage('Password attribute is missing')
+    .isAlphanumeric()
+    .withMessage('Not alphanumeric password')
+    .isLength({ min: userConfig.password_length })
+    .withMessage('Not long enough password'),
+  exports.validate
+];
+
+exports.loginUser = [
+  check('email')
+    .exists()
+    .withMessage('Email attribute is missing')
+    .isEmail()
+    .withMessage('Not valid email')
+    .contains(userConfig.email_domain)
+    .withMessage('Not wolox email'),
+  check('password')
+    .exists()
+    .withMessage('Password attribute is missing')
+    .isAlphanumeric()
+    .withMessage('Not alphanumeric password')
+    .isLength({ min: userConfig.password_length })
+    .withMessage('Not long enough password'),
+  exports.validate
+];
