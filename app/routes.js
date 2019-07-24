@@ -7,7 +7,7 @@ exports.init = app => {
   app.get('/health', healthCheck);
   app.get('/albums', albumsController.getAlbums);
   app.get('/albums/:id/photos', albumsController.getPhotoOfAlbum);
-  app.get('/users', [securityMiddle.checkToken], userController.getUsers);
+  app.get('/users', userMiddle.listUsers.concat(securityMiddle.checkToken), userController.getUsers);
   app.post('/users', userMiddle.createUser, userController.addUser);
   app.post('/users/sessions', userMiddle.loginUser, userController.loginUser);
   // app.get('/endpoint/get/path', [], controller.methodGET);

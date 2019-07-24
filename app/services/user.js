@@ -53,21 +53,11 @@ exports.loginUser = async body => {
 };
 exports.getUsers = async params => {
   const { page, size } = params;
-  if (!page || !size) {
-    const err = new Error('Number of page or size missing');
-    err.internalCode = 'bad_request';
-    throw err;
-  }
-  if (isNaN(page) || isNaN(size)) {
-    const err = new Error('Number of page or size is not a number');
-    err.internalCode = 'bad_request';
-    throw err;
-  }
   const offset = page * size;
   const limit = size;
   try {
-    const result = await User.findAll({ offset, limit });
-    return result;
+    const userList = await User.findAll({ offset, limit });
+    return userList;
   } catch (e) {
     e.internalCode = 'database_error';
     throw e;
