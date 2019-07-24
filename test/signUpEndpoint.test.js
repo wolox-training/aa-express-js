@@ -86,7 +86,7 @@ describe('Test sign up endpoint', () => {
       .post('/users')
       .send(firstRightQuery)
       .expect(400);
-    expect(res.body.message).toBe('Validation error');
+    expect(res.body.message).toBe('Email alredy exist');
   });
 
   test('Try To Create Two User With Different Email', async () => {

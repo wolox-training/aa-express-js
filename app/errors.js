@@ -14,3 +14,6 @@ exports.conectionError = message => internalError(message, exports.CONECTION_ERR
 
 exports.BAD_REQUEST = 'bad_request';
 exports.badRequest = message => internalError(message, exports.BAD_REQUEST);
+
+exports.NOT_FOUND = 'not_found';
+exports.notFound = message => internalError(message, exports.NOT_FOUND);
