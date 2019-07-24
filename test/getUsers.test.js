@@ -1,9 +1,7 @@
 const request = require('supertest');
-const Chance = require('chance');
+const chance = require('chance')();
 
 const app = require('../app');
-
-const chance = new Chance();
 
 const firstRightQuery = {
   firstName: chance.first(),
