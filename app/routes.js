@@ -8,16 +8,7 @@ exports.init = app => {
   app.get('/health', healthCheck);
   app.get('/albums', albumsController.getAlbums);
   app.get('/albums/:id/photos', albumsController.getPhotoOfAlbum);
-  app.post(
-    '/admin/users',
-    [
-      userMiddle.checkUserProperties,
-      userMiddle.validateEmail,
-      userMiddle.validatePassword,
-      securityMiddle.checkToken
-    ],
-    adminController.addAdminUser
-  );
+  app.post('/admin/users', [userMiddle.createUser, securityMiddle.checkToken], adminController.addAdminUser);
   app.get('/users', [userMiddle.listUsers, securityMiddle.checkToken], userController.getUsers);
   app.post('/users', userMiddle.createUser, userController.addUser);
   app.post('/users/sessions', userMiddle.loginUser, userController.loginUser);
