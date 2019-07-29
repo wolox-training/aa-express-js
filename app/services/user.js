@@ -1,9 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const errors = require('../errors');
 const User = require('../models').users;
 const AlbumTransaction = require('../models').albums_transactions;
+const errors = require('../errors');
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
 
@@ -22,17 +22,17 @@ exports.createUser = body => {
   try {
     return bcrypt.hash(body.password, saltRounds).then(async hash => {
       try {
-        const result = await User.create({
+        const user = await User.create({
           firstName: body.firstName,
           lastName: body.lastName,
           email: body.email,
           password: hash,
           admin: false
         });
-        return result;
+        return user;
       } catch (e) {
         if (e.message === 'Validation error') {
-          throw errors.badRequest(e.message);
+          throw errors.badRequest('Email alredy exist');
         }
         throw errors.databaseError(e.message);
       }
@@ -45,23 +45,20 @@ exports.createUser = body => {
   }
 };
 exports.loginUser = async body => {
-  if (!body.email || !body.password) {
-    throw errors.badRequest('Missing attribute');
-  }
   try {
-    const result = await User.find({
+    const user = await User.findOne({
       where: {
         email: body.email
       }
     });
-    if (!result) {
-      throw errors.badRequest('User not found');
+    if (!user) {
+      throw errors.notFound('User not found');
     }
-    return bcrypt.compare(body.password, result.password).then(res => {
+    return await bcrypt.compare(body.password, user.password).then(res => {
       if (!res) {
         throw errors.badRequest('Wrong password');
       }
-      return jwt.sign({ email: result.email, admin: result.admin }, secretKey);
+      return jwt.sign({ email: user.email, admin: user.admin }, secretKey);
     });
   } catch (e) {
     if (e.internalCode) {
@@ -72,21 +69,11 @@ exports.loginUser = async body => {
 };
 exports.getUsers = async params => {
   const { page, size } = params;
-  if (!page || !size) {
-    const err = new Error('Number of page or size missing');
-    err.internalCode = 'bad_request';
-    throw err;
-  }
-  if (isNaN(page) || isNaN(size)) {
-    const err = new Error('Number of page or size is not a number');
-    err.internalCode = 'bad_request';
-    throw err;
-  }
   const offset = page * size;
   const limit = size;
   try {
-    const result = await User.findAll({ offset, limit });
-    return result;
+    const userList = await User.findAll({ offset, limit });
+    return userList;
   } catch (e) {
     e.internalCode = 'database_error';
     throw e;

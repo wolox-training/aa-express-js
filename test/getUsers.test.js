@@ -1,9 +1,7 @@
 const request = require('supertest');
-const Chance = require('chance');
+const chance = require('chance')();
 
 const app = require('../app');
-
-const chance = new Chance();
 
 const firstRightQuery = {
   firstName: chance.first(),
@@ -38,24 +36,24 @@ const fourRightQuery = {
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
-describe('Get Users', () => {
+describe('Test get users', () => {
   test('Correct Get Users', async () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users')
       .send(secondRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users')
       .send(thirdRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users')
       .send(fourRightQuery)
-      .expect(200);
+      .expect(201);
     const res = await request(app)
       .post('/users/sessions')
       .send(logInRightQuery)
@@ -100,19 +98,19 @@ describe('Get Users', () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users')
       .send(secondRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users')
       .send(thirdRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users')
       .send(fourRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users/sessions')
       .send(logInRightQuery)
@@ -127,19 +125,19 @@ describe('Get Users', () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users')
       .send(secondRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users')
       .send(thirdRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users')
       .send(fourRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users/sessions')
       .send(logInRightQuery)
