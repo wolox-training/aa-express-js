@@ -21,14 +21,14 @@ exports.createUser = body => {
   try {
     return bcrypt.hash(body.password, saltRounds).then(async hash => {
       try {
-        const result = await User.create({
+        const user = await User.create({
           firstName: body.firstName,
           lastName: body.lastName,
           email: body.email,
           password: hash,
           admin: false
         });
-        return result;
+        return user;
       } catch (e) {
         if (e.message === 'Validation error') {
           throw errors.badRequest('Email alredy exist');
@@ -45,19 +45,19 @@ exports.createUser = body => {
 };
 exports.loginUser = async body => {
   try {
-    const result = await User.findOne({
+    const user = await User.findOne({
       where: {
         email: body.email
       }
     });
-    if (!result) {
+    if (!user) {
       throw errors.notFound('User not found');
     }
-    return await bcrypt.compare(body.password, result.password).then(res => {
+    return await bcrypt.compare(body.password, user.password).then(res => {
       if (!res) {
         throw errors.badRequest('Wrong password');
       }
-      return jwt.sign({ email: result.email, admin: result.admin }, secretKey);
+      return jwt.sign({ email: user.email, admin: user.admin }, secretKey);
     });
   } catch (e) {
     if (e.internalCode) {
