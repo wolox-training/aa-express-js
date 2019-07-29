@@ -1,9 +1,7 @@
 const request = require('supertest');
-const Chance = require('chance');
+const chance = require('chance')();
 
 const app = require('../app');
-
-const chance = new Chance();
 
 const firstRightQuery = {
   firstName: chance.first(),
@@ -35,13 +33,13 @@ const notEmailFormatQuery = {
 
 const notNameQuery = {
   lastName: chance.last(),
-  email: chance.string(),
+  email: chance.email({ domain: 'wolox.com.ar' }),
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
 const notLastNameQuery = {
   firstName: chance.first(),
-  email: chance.string(),
+  email: chance.email({ domain: 'wolox.com.ar' }),
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
@@ -54,104 +52,115 @@ const notEmailQuery = {
 const notPasswordQuery = {
   firstName: chance.first(),
   lastName: chance.last(),
-  email: chance.string()
+  email: chance.email({ domain: 'wolox.com.ar' })
 };
 
 const notValidPasswordQuery = {
   firstName: chance.first(),
   lastName: chance.last(),
-  email: chance.string(),
+  email: chance.email({ domain: 'wolox.com.ar' }),
   password: chance.string({ length: 10, pool: 'as!"7258369' })
 };
 
 const notLongEnoughPasswordQuery = {
   firstName: chance.first(),
   lastName: chance.last(),
-  email: chance.string(),
-  password: chance.string({ length: 3, pool: 'as!"7258369' })
+  email: chance.email({ domain: 'wolox.com.ar' }),
+  password: chance.string({ length: 3, pool: 'as7258369' })
 };
 
-test('Right Only One Creation User', async () => {
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(200);
-});
+describe('Test sign up endpoint', () => {
+  test('Right Only One Creation User', async () => {
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(201);
+  });
 
-test('Try To Create Two User With Equal Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(200);
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(400);
-});
+  test('Try To Create Two User With Equal Email', async () => {
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(201);
+    const res = await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(400);
+    expect(res.body.message).toBe('Email alredy exist');
+  });
 
-test('Try To Create Two User With Different Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(firstRightQuery)
-    .expect(200);
-  await request(app)
-    .post('/users')
-    .send(secondRightQuery)
-    .expect(200);
-});
+  test('Try To Create Two User With Different Email', async () => {
+    await request(app)
+      .post('/users')
+      .send(firstRightQuery)
+      .expect(201);
+    await request(app)
+      .post('/users')
+      .send(secondRightQuery)
+      .expect(201);
+  });
 
-test('Try To Create One User With Not Wolox Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(notWoloxEmailQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Wolox Email', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notWoloxEmailQuery)
+      .expect(400);
+    expect(res.body.message[0]).toBe('Not wolox email');
+  });
 
-test('Try To Create One User With Not Name', async () => {
-  await request(app)
-    .post('/users')
-    .send(notNameQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Name', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notNameQuery)
+      .expect(400);
+    expect(res.body.message[0]).toBe('First name attribute is missing');
+  });
 
-test('Try To Create One User With Not Last Name', async () => {
-  await request(app)
-    .post('/users')
-    .send(notLastNameQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Last Name', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notLastNameQuery)
+      .expect(400);
+    expect(res.body.message[0]).toBe('Last name attribute is missing');
+  });
 
-test('Try To Create One User With Not Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(notEmailQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Email', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notEmailQuery)
+      .expect(400);
+    expect(res.body.message[0]).toBe('Email attribute is missing');
+  });
 
-test('Try To Create One User With Not Password', async () => {
-  await request(app)
-    .post('/users')
-    .send(notPasswordQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Password', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notPasswordQuery)
+      .expect(400);
+    expect(res.body.message[0]).toBe('Password attribute is missing');
+  });
 
-test('Try To Create One User With Not Valid Password', async () => {
-  await request(app)
-    .post('/users')
-    .send(notValidPasswordQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Valid Password', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notValidPasswordQuery)
+      .expect(400);
+    expect(res.body.message[0]).toBe('Not alphanumeric password');
+  });
 
-test('Try To Create One User With Not Long Enough Password', async () => {
-  await request(app)
-    .post('/users')
-    .send(notLongEnoughPasswordQuery)
-    .expect(400);
-});
+  test('Try To Create One User With Not Long Enough Password', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notLongEnoughPasswordQuery)
+      .expect(400);
+    expect(res.body.message[0]).toBe('Not long enough password');
+  });
 
-test('Try To Create One User With Not Format Email', async () => {
-  await request(app)
-    .post('/users')
-    .send(notEmailFormatQuery)
-    .expect(400);
+  test('Try To Create One User With Not Format Email', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send(notEmailFormatQuery)
+      .expect(400);
+    expect(res.body.message[0]).toBe('Not valid email');
+  });
 });
