@@ -27,3 +27,11 @@ exports.loginUser = (req, res, next) =>
       log.error(err.message);
       return next(err);
     });
+exports.getUsers = (req, res, next) =>
+  usersService
+    .getUsers(req.query)
+    .then(users => res.status(200).send(users))
+    .catch(err => {
+      log.error(err.message);
+      return next(err);
+    });

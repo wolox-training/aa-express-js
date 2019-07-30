@@ -10,6 +10,7 @@ exports.validate = (req, res, next) => {
   }
   return next();
 };
+
 exports.createUser = [
   check('firstName')
     .exists()
@@ -49,5 +50,19 @@ exports.loginUser = [
     .withMessage('Not alphanumeric password')
     .isLength({ min: userConfig.password_length })
     .withMessage('Not long enough password'),
+  exports.validate
+];
+
+exports.listUsers = [
+  check('page')
+    .exists()
+    .withMessage('Number of page is missing')
+    .isInt()
+    .withMessage('Pages is not an integer'),
+  check('size')
+    .exists()
+    .withMessage('Number of page is missing')
+    .isInt()
+    .withMessage('Pages is not an integer'),
   exports.validate
 ];

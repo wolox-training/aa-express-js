@@ -8,6 +8,7 @@ const statusCodes = {
   [errors.DATABASE_ERROR]: 503,
   [errors.DEFAULT_ERROR]: 500,
   [errors.BAD_REQUEST]: 400,
+  [errors.FORBIDDEN_USER]: 403,
   [errors.NOT_FOUND]: 404
 };
 

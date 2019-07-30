@@ -51,3 +51,15 @@ exports.loginUser = async body => {
     throw errors.defaultError(e.message);
   }
 };
+exports.getUsers = async params => {
+  const { page, size } = params;
+  const offset = page * size;
+  const limit = size;
+  try {
+    const userList = await User.findAll({ offset, limit });
+    return userList;
+  } catch (e) {
+    e.internalCode = 'database_error';
+    throw e;
+  }
+};
