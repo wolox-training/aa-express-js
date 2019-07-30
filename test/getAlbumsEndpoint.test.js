@@ -1,11 +1,10 @@
 const request = require('supertest');
-const Chance = require('chance');
+const chance = require('chance')();
 const bcrypt = require('bcryptjs');
 
 const app = require('../app');
 const db = require('../app/models');
 
-const chance = new Chance();
 const saltRounds = 10;
 
 const firstRightQuery = {
