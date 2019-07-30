@@ -17,6 +17,7 @@ exports.createAdminUser = async body => {
     throw errors.databaseError(e.message);
   }
 };
+
 exports.createUser = body => {
   try {
     return bcrypt.hash(body.password, saltRounds).then(async hash => {
@@ -43,6 +44,7 @@ exports.createUser = body => {
     throw errors.defaultError(e.message);
   }
 };
+
 exports.loginUser = async body => {
   try {
     const user = await User.findOne({
@@ -66,6 +68,7 @@ exports.loginUser = async body => {
     throw errors.defaultError(e.message);
   }
 };
+
 exports.getUsers = async params => {
   const { page, size } = params;
   const offset = page * size;
@@ -74,7 +77,6 @@ exports.getUsers = async params => {
     const userList = await User.findAll({ offset, limit });
     return userList;
   } catch (e) {
-    e.internalCode = 'database_error';
-    throw e;
+    throw errors.databaseError(e.message);
   }
 };
