@@ -1,5 +1,6 @@
 'use strict';
 const bcrypt = require('bcryptjs');
+const moment = require('moment');
 
 const saltRounds = 10;
 
@@ -16,8 +17,8 @@ module.exports = {
           email: 'admin@wolox.com.ar',
           password: hash,
           admin: true,
-          created_at: new Date(),
-          updated_at: new Date()
+          created_at: moment().format(),
+          updated_at: moment().format()
         }
       ])
     );

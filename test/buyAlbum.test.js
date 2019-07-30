@@ -1,9 +1,7 @@
 const request = require('supertest');
-const Chance = require('chance');
+const chance = require('chance')();
 
 const app = require('../app');
-
-const chance = new Chance();
 
 const firstRightQuery = {
   firstName: chance.first(),
@@ -12,12 +10,12 @@ const firstRightQuery = {
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
-describe('By An Album', () => {
+describe('Buy An Album', () => {
   beforeEach(async done => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     done();
   });
   test('Correct Buy Of An Album', async () => {
