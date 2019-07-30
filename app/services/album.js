@@ -2,7 +2,6 @@ const fetch = require('node-fetch');
 
 const config = require('../../config').common.albums;
 const errors = require('../errors');
-const db = require('../models');
 
 exports.getAlbums = async () => {
   try {
@@ -32,26 +31,17 @@ exports.getPhotosOfAlbum = async albumId => {
   }
 };
 
-exports.buyAlbum = async (albumId, userEmail) => {
+exports.getAlbum = async albumId => {
   const endpoint = `${config.api_url}/albums/${albumId}`;
   try {
-    const user = await db.users.find({ where: { email: userEmail } });
-    const response = await fetch(endpoint);
-    if (response.status !== 200) {
+    const album = await fetch(endpoint);
+    if (album.status !== 200) {
       throw errors.conectionError('Error calling api');
     }
-    if (!response.json()) {
+    if (!album) {
       throw errors.badRequest('The album not does exist');
     }
-    const transaction = await db.albums_transactions.find({ where: { userId: user.id, albumId } });
-    if (transaction) {
-      throw errors.badRequest('The transaction was alredy made');
-    }
-    const result = await db.albums_transactions.create({
-      userId: user.id,
-      albumId
-    });
-    return result;
+    return album.json();
   } catch (e) {
     if (!e.internalCode) {
       throw errors.defaultError(e.message);
