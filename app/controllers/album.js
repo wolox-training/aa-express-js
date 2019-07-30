@@ -28,7 +28,7 @@ exports.buyAlbum = (req, res, next) => {
   return albumsService
     .getAlbum(albumId)
     .then(album => transactionsService.buyAlbum(email, album))
-    .then(() => res.status(200).send())
+    .then(() => res.status(200).end())
     .catch(err => {
       log.error(err.message);
       return next(err);
