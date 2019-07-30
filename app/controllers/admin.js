@@ -1,12 +1,8 @@
 const services = require('../services/user');
 const log = require('../logger');
-const errors = require('../errors');
 
-exports.addAdminUser = (req, res, next) => {
-  if (!req.decode.admin) {
-    return next(errors.forbiddenUser('Only admin can use this'));
-  }
-  return services
+exports.addAdminUser = (req, res, next) =>
+  services
     .createAdminUser(req.body)
     .then(result => {
       log.info(`User created as admin first name: ${result.firstName}, last name: ${result.lastName}`);
@@ -17,4 +13,3 @@ exports.addAdminUser = (req, res, next) => {
       log.error(e.message);
       return next(e);
     });
-};
