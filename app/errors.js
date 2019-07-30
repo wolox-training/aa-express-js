@@ -17,3 +17,6 @@ exports.badRequest = message => internalError(message, exports.BAD_REQUEST);
 
 exports.FORBIDDEN_USER = 'forbidden_user';
 exports.forbiddenUser = message => internalError(message, exports.FORBIDDEN_USER);
+
+exports.NOT_FOUND = 'not_found';
+exports.notFound = message => internalError(message, exports.NOT_FOUND);

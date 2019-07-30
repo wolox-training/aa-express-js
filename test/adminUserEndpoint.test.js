@@ -1,12 +1,10 @@
 const request = require('supertest');
-const Chance = require('chance');
+const chance = require('chance')();
 const bcrypt = require('bcryptjs');
 
 const app = require('../app');
 const db = require('../app/models');
 const saltRounds = 10;
-
-const chance = new Chance();
 
 const firstRightQuery = {
   firstName: chance.first(),
@@ -51,7 +49,7 @@ describe('Create Admin Users', () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/admin/users')
       .set('token', res.body.token)
@@ -67,7 +65,7 @@ describe('Create Admin Users', () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     const res = await request(app)
       .post('/users/sessions')
       .send(firstRightQuery)
@@ -80,7 +78,7 @@ describe('Create Admin Users', () => {
     await request(app)
       .post('/users')
       .send(secondRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/admin/users')
       .set('token', res.body.token)
