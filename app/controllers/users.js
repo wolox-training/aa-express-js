@@ -8,7 +8,7 @@ exports.addUser = (req, res, next) =>
       log.info(`User created first name: ${result.firstName}, last name: ${result.lastName}`);
       return result;
     })
-    .then(() => res.status(201).send())
+    .then(() => res.status(201).end())
     .catch(err => {
       log.error(err.message);
       return next(err);
@@ -21,7 +21,7 @@ exports.loginUser = (req, res, next) =>
       res
         .json({ token })
         .status(201)
-        .send()
+        .end()
     )
     .catch(err => {
       log.error(err.message);

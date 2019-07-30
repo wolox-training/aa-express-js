@@ -30,3 +30,22 @@ exports.getPhotosOfAlbum = async albumId => {
     throw errors.conectionError(e.message);
   }
 };
+
+exports.getAlbum = async albumId => {
+  const endpoint = `${config.api_url}/albums/${albumId}`;
+  try {
+    const album = await fetch(endpoint);
+    if (album.status !== 200) {
+      throw errors.conectionError('Error calling api');
+    }
+    if (!album) {
+      throw errors.badRequest('The album not does exist');
+    }
+    return album.json();
+  } catch (e) {
+    if (!e.internalCode) {
+      throw errors.defaultError(e.message);
+    }
+    throw e;
+  }
+};

@@ -1,8 +1,8 @@
-const services = require('../services/user');
+const usersService = require('../services/user');
 const log = require('../logger');
 
 exports.addAdminUser = (req, res, next) =>
-  services
+  usersService
     .createAdminUser(req.body)
     .then(result => {
       log.info(`User created as admin first name: ${result.firstName}, last name: ${result.lastName}`);

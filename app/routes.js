@@ -7,6 +7,7 @@ const securityMiddle = require('./middlewares/security');
 exports.init = app => {
   app.get('/health', healthCheck);
   app.get('/albums', albumsController.getAlbums);
+  app.post('/albums/:id', [securityMiddle.checkToken], albumsController.buyAlbum);
   app.get('/albums/:id/photos', albumsController.getPhotoOfAlbum);
   app.post(
     '/admin/users',

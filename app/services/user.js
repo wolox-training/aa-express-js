@@ -8,7 +8,7 @@ const saltRounds = 10;
 
 exports.createAdminUser = async body => {
   try {
-    let result = await User.find({ where: { email: body.email } });
+    let result = await User.findOne({ where: { email: body.email } });
     if (!result) {
       result = await exports.createUser(body);
     }
