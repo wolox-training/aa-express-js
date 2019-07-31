@@ -56,9 +56,9 @@ exports.getPhotosOfAlbum = (req, res, next) => {
       return next(err);
     });
 };
-exports.invalidateAllTokens = (req, res, next) =>
+exports.invalidateTokensOfUser = (req, res, next) =>
   usersService
-    .invalidateAllTokens()
+    .invalidateTokensOfUser(req.decode.email)
     .then(() => res.status(200).send())
     .catch(err => {
       log.error(err.message);

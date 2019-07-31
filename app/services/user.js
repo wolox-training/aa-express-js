@@ -120,4 +120,5 @@ exports.getPhotosOfAlbums = async (userEmail, albumId, getPhotosOfAlbum) => {
   }
 };
 
-exports.invalidateAllTokens = () => User.update({ timestampTokenCreation: moment().format() }, { where: {} });
+exports.invalidateTokensOfUser = email =>
+  User.update({ timestampTokenCreation: moment().format() }, { where: { email } });
