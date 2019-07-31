@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 
 const User = require('../models').users;
 const AlbumTransaction = require('../models').albumsTransactions;
@@ -9,11 +10,11 @@ const saltRounds = 10;
 
 exports.createAdminUser = async body => {
   try {
-    let result = await User.findOne({ where: { email: body.email } });
-    if (!result) {
-      result = await exports.createUser(body);
+    let user = await User.findOne({ where: { email: body.email } });
+    if (!user) {
+      user = await exports.createUser(body);
     }
-    return result.update({ admin: true });
+    return user.update({ admin: true });
   } catch (e) {
     throw errors.databaseError(e.message);
   }
@@ -56,11 +57,12 @@ exports.loginUser = async body => {
     if (!user) {
       throw errors.notFound('User not found');
     }
-    return await bcrypt.compare(body.password, user.password).then(res => {
+    return bcrypt.compare(body.password, user.password).then(async res => {
       if (!res) {
         throw errors.badRequest('Wrong password');
       }
-      return jwt.sign({ email: user.email, admin: user.admin }, secretKey);
+      await user.update({ timestampTokenCreation: moment().format() });
+      return jwt.sign({ email: user.email, admin: user.admin, tokenCreation: moment().format() }, secretKey);
     });
   } catch (e) {
     if (e.internalCode) {
@@ -117,3 +119,6 @@ exports.getPhotosOfAlbums = async (userEmail, albumId, getPhotosOfAlbum) => {
     throw errors.defaultError(e.message);
   }
 };
+
+exports.invalidateTokensOfUser = email =>
+  User.update({ timestampTokenCreation: moment().format() }, { where: { email } });

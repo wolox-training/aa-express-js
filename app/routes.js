@@ -16,6 +16,12 @@ exports.init = app => {
   app.get('/users/:id/albums', [securityMiddle.checkToken], userController.getAlbumsOfUser);
   // Obtener photos de un album comprado
   app.get('/users/albums/:id/photos', [securityMiddle.checkToken], userController.getPhotosOfAlbum);
+  // Invalidar todas las sesiones
+  app.post(
+    '/users/sessions/invalidate_all',
+    [securityMiddle.checkToken],
+    userController.invalidateTokensOfUser
+  );
   // Crear un usuario admin
   app.post(
     '/admin/users',

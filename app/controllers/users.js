@@ -56,3 +56,11 @@ exports.getPhotosOfAlbum = (req, res, next) => {
       return next(err);
     });
 };
+exports.invalidateTokensOfUser = (req, res, next) =>
+  usersService
+    .invalidateTokensOfUser(req.decode.email)
+    .then(() => res.status(200).send())
+    .catch(err => {
+      log.error(err.message);
+      return next(err);
+    });

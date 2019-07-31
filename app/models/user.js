@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
       updatedAt: {
         type: DataTypes.DATE,
         field: 'updated_at'
+      },
+      timestampTokenCreation: {
+        type: DataTypes.DATE,
+        field: 'timestamp_token_creation'
       }
     },
     {}

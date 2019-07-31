@@ -10,11 +10,6 @@ const firstRightQuery = {
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
-const logInRightQuery = {
-  email: firstRightQuery.email,
-  password: firstRightQuery.password
-};
-
 const secondRightQuery = {
   firstName: chance.first(),
   lastName: chance.last(),
@@ -36,7 +31,12 @@ const fourRightQuery = {
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
 
-describe('Test get users', () => {
+const logInRightQuery = {
+  email: fourRightQuery.email,
+  password: fourRightQuery.password
+};
+
+describe('Get Users', () => {
   test('Correct Get Users', async () => {
     await request(app)
       .post('/users')
