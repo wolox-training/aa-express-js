@@ -9,25 +9,21 @@ exports.addUser = (req, res, next) =>
       log.info(`User created first name: ${result.firstName}, last name: ${result.lastName}`);
       return result;
     })
-    .then(result =>
-      res
-        .json(result)
-        .status(201)
-        .send()
-    )
+    .then(() => res.status(201).end())
     .catch(err => {
       log.error(err.message);
       return next(err);
     });
+
 exports.loginUser = (req, res, next) =>
   usersService
     .loginUser(req.body)
-    .then(token => {
+    .then(token =>
       res
         .json({ token })
         .status(201)
-        .send();
-    })
+        .end()
+    )
     .catch(err => {
       log.error(err.message);
       return next(err);
@@ -44,12 +40,10 @@ exports.getAlbumsOfUser = (req, res, next) => {
   const userId = req.params.id;
   return usersService
     .getAlbumsOfUser(req.decode.email, userId, req.decode.admin, albumsService.getAlbum)
-    .then(albums => {
-      res.status(200).send(albums);
-    })
+    .then(albums => res.status(200).send(albums))
     .catch(err => {
       log.error(err.message);
-      next(err);
+      return next(err);
     });
 };
 exports.getPhotosOfAlbum = (req, res, next) => {

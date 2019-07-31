@@ -1,9 +1,7 @@
 const request = require('supertest');
-const Chance = require('chance');
+const chance = require('chance')();
 
 const app = require('../app');
-
-const chance = new Chance();
 
 const firstRightQuery = {
   firstName: chance.first(),
@@ -26,12 +24,13 @@ const logInWrongPassQuery = {
   email: firstRightQuery.email,
   password: chance.string({ length: 10, pool: 'asdfghjkl147258369' })
 };
-describe('Sign In', () => {
+
+describe('Test sign in endpoint', () => {
   test('Correct Log In', async () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     await request(app)
       .post('/users/sessions')
       .send(logInRightQuery)
@@ -42,21 +41,23 @@ describe('Sign In', () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
-    await request(app)
+      .expect(201);
+    const res = await request(app)
       .post('/users/sessions')
       .send(logInWrongEmailQuery)
-      .expect(400);
+      .expect(404);
+    expect(res.body.message).toBe('User not found');
   });
 
   test('Wrong Password Log In', async () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
-    await request(app)
+      .expect(201);
+    const res = await request(app)
       .post('/users/sessions')
       .send(logInWrongPassQuery)
       .expect(400);
+    expect(res.body.message).toBe('Wrong password');
   });
 });
