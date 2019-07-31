@@ -39,6 +39,7 @@ describe('Invalidate All Tokens', () => {
       .expect(200);
     await request(app)
       .post('/users/sessions/invalidate_all')
+      .set('token', res.body.token)
       .send()
       .expect(200);
     await request(app)
