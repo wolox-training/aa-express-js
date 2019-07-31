@@ -40,11 +40,9 @@ exports.getAlbumsOfUser = (req, res, next) => {
   const userId = req.params.id;
   return usersService
     .getAlbumsOfUser(req.decode.email, userId, req.decode.admin, albumsService.getAlbum)
-    .then(albums => {
-      res.status(200).send(albums);
-    })
+    .then(albums => res.status(200).send(albums))
     .catch(err => {
       log.error(err.message);
-      next(err);
+      return next(err);
     });
 };
