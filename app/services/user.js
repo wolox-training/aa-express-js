@@ -2,39 +2,40 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 
-const errors = require('../errors');
 const User = require('../models').users;
-const AlbumTransaction = require('../models').albums_transactions;
+const AlbumTransaction = require('../models').albumsTransactions;
+const errors = require('../errors');
 const secretKey = require('../../config').common.jwt.secret_key;
 const expirationTime = require('../../config').common.jwt.expiration_time;
 const saltRounds = 10;
 
 exports.createAdminUser = async body => {
   try {
-    let result = await User.find({ where: { email: body.email } });
-    if (!result) {
-      result = await exports.createUser(body);
+    let user = await User.findOne({ where: { email: body.email } });
+    if (!user) {
+      user = await exports.createUser(body);
     }
-    return result.update({ admin: true });
+    return user.update({ admin: true });
   } catch (e) {
     throw errors.databaseError(e.message);
   }
 };
+
 exports.createUser = body => {
   try {
     return bcrypt.hash(body.password, saltRounds).then(async hash => {
       try {
-        const result = await User.create({
+        const user = await User.create({
           firstName: body.firstName,
           lastName: body.lastName,
           email: body.email,
           password: hash,
           admin: false
         });
-        return result;
+        return user;
       } catch (e) {
         if (e.message === 'Validation error') {
-          throw errors.badRequest(e.message);
+          throw errors.badRequest('Email alredy exist');
         }
         throw errors.databaseError(e.message);
       }
@@ -46,25 +47,23 @@ exports.createUser = body => {
     throw errors.defaultError(e.message);
   }
 };
+
 exports.loginUser = async body => {
-  if (!body.email || !body.password) {
-    throw errors.badRequest('Missing attribute');
-  }
   try {
-    const result = await User.findOne({
+    const user = await User.findOne({
       where: {
         email: body.email
       }
     });
-    if (!result) {
-      throw errors.badRequest('User not found');
+    if (!user) {
+      throw errors.notFound('User not found');
     }
-    return bcrypt.compare(body.password, result.password).then(async res => {
+    return bcrypt.compare(body.password, user.password).then(async res => {
       if (!res) {
         throw errors.badRequest('Wrong password');
       }
-      await result.update({ timestampTokenCreation: moment().format() });
-      return jwt.sign({ email: result.email, admin: result.admin }, secretKey, { expiresIn: expirationTime });
+      await user.update({ timestampTokenCreation: moment().format() });
+      return jwt.sign({ email: user.email, admin: user.admin }, secretKey, { expiresIn: expirationTime });
     });
   } catch (e) {
     if (e.internalCode) {
@@ -73,43 +72,29 @@ exports.loginUser = async body => {
     throw errors.defaultError(e.message);
   }
 };
+
 exports.getUsers = async params => {
   const { page, size } = params;
-  if (!page || !size) {
-    const err = new Error('Number of page or size missing');
-    err.internalCode = 'bad_request';
-    throw err;
-  }
-  if (isNaN(page) || isNaN(size)) {
-    const err = new Error('Number of page or size is not a number');
-    err.internalCode = 'bad_request';
-    throw err;
-  }
   const offset = page * size;
   const limit = size;
   try {
-    return await User.findAll({ offset, limit });
+    const userList = await User.findAll({ offset, limit });
+    return userList;
   } catch (e) {
-    e.internalCode = 'database_error';
-    throw e;
+    throw errors.databaseError(e.message);
   }
 };
 exports.getAlbumsOfUser = async (userEmail, userId, admin, getAlbum) => {
-  const albumsProm = [];
   try {
-    const user = await User.find({ where: { id: userId } });
+    const user = await User.findOne({ where: { id: userId } });
     if (!user) {
-      throw errors.badRequest('User not exist');
+      throw errors.notFound('User not exist');
     }
     if (user.email !== userEmail && !admin) {
       throw errors.forbiddenUser('You can not see albums from other users');
     }
     const transactions = await AlbumTransaction.findAll({ where: { userId } });
-    transactions.forEach(transaction => {
-      const albumProm = getAlbum(transaction.albumId);
-      albumsProm.push(albumProm);
-    });
-    return Promise.all(albumsProm);
+    return Promise.map(transactions, transcation => getAlbum(transcation));
   } catch (e) {
     if (e.internalCode) {
       throw e;
@@ -119,11 +104,11 @@ exports.getAlbumsOfUser = async (userEmail, userId, admin, getAlbum) => {
 };
 exports.getPhotosOfAlbums = async (userEmail, albumId, getPhotosOfAlbum) => {
   try {
-    const user = await User.find({ where: { email: userEmail } });
+    const user = await User.findOne({ where: { email: userEmail } });
     if (!user) {
       throw errors.badRequest('User not exist');
     }
-    const transaction = await AlbumTransaction.find({ where: { userId: user.id, albumId } });
+    const transaction = await AlbumTransaction.findOne({ where: { userId: user.id, albumId } });
     if (!transaction) {
       throw errors.badRequest('You did not buy this album');
     }
@@ -136,10 +121,5 @@ exports.getPhotosOfAlbums = async (userEmail, albumId, getPhotosOfAlbum) => {
   }
 };
 
-exports.invalidateAllTokens = async () => {
-  try {
-    return await User.update({ timestampTokenCreation: moment().format() }, { where: {} });
-  } catch (e) {
-    throw errors.databaseError(e.message);
-  }
-};
+exports.invalidateTokensOfUser = email =>
+  User.update({ timestampTokenCreation: moment().format() }, { where: { email } });

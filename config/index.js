@@ -51,8 +51,8 @@ const config = {
       expiration_time: process.env.EXPIRATION_TIME
     },
     user: {
-      password_regex: process.env.PASSWORD_REGEX,
-      email_regex: process.env.EMAIL_REGEX
+      password_length: process.env.PASSWORD_LENGTH,
+      email_domain: process.env.EMAIL_DOMAIN
     }
   }
 };

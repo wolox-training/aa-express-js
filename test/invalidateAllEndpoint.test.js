@@ -23,7 +23,7 @@ describe('Invalidate All Tokens', () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     done();
   });
   test('Invalidate Tokens', async () => {
@@ -39,6 +39,7 @@ describe('Invalidate All Tokens', () => {
     await sleep(1000);
     await request(app)
       .post('/users/sessions/invalidate_all')
+      .set('token', res.body.token)
       .send()
       .expect(200);
     await request(app)
