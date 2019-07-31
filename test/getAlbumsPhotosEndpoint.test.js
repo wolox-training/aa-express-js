@@ -6,9 +6,9 @@ const app = require('../app');
 const chance = new Chance();
 
 const fetchMock = require('./__mocks__/node-fetch');
-const { photosFetch } = require('./__mocks__/photosFetch');
+const { getPhotosFetch } = require('./__mocks__/photosFetch');
 const mockAlbumPhotos = require('./__mocks__/photosFetch').albumPhotos;
-fetchMock.get('begin:https://jsonplaceholder.typicode.com/photos', photosFetch);
+fetchMock.get('begin:https://jsonplaceholder.typicode.com/photos', getPhotosFetch);
 
 const firstRightQuery = {
   firstName: chance.first(),
@@ -22,7 +22,7 @@ describe('Get Photo Of An Album Bougth', () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     done();
   });
   test('Correct Get Photo', async () => {

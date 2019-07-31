@@ -21,3 +21,10 @@ exports.checkToken = async (req, res, next) => {
     return next(errors.forbiddenUser(e.message));
   }
 };
+
+exports.isAdmin = (req, res, next) => {
+  if (!req.decode.admin) {
+    return next(errors.forbiddenUser('Only admin can use this'));
+  }
+  return next();
+};
