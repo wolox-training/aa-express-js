@@ -9,6 +9,7 @@ exports.init = app => {
   app.get('/albums', albumsController.getAlbums);
   app.post('/albums/:id', [securityMiddle.checkToken], albumsController.buyAlbum);
   app.get('/albums/:id/photos', albumsController.getPhotoOfAlbum);
+  app.get('/users/:id/albums', [securityMiddle.checkToken], userController.getAlbumsOfUser);
   app.post(
     '/admin/users',
     [userMiddle.createUser, securityMiddle.checkToken, securityMiddle.isAdmin],

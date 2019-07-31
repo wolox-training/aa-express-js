@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models').users;
+const AlbumTransaction = require('../models').albums_transactions;
 const errors = require('../errors');
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
@@ -78,5 +79,23 @@ exports.getUsers = async params => {
     return userList;
   } catch (e) {
     throw errors.databaseError(e.message);
+  }
+};
+exports.getAlbumsOfUser = async (userEmail, userId, admin, getAlbum) => {
+  try {
+    const user = await User.findOne({ where: { id: userId } });
+    if (!user) {
+      throw errors.notFound('User not exist');
+    }
+    if (user.email !== userEmail && !admin) {
+      throw errors.forbiddenUser('You can not see albums from other users');
+    }
+    const transactions = await AlbumTransaction.findAll({ where: { userId } });
+    return Promise.map(transactions, transcation => getAlbum(transcation));
+  } catch (e) {
+    if (e.internalCode) {
+      throw e;
+    }
+    throw errors.defaultError(e.message);
   }
 };

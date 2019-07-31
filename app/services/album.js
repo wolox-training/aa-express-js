@@ -16,6 +16,19 @@ exports.getAlbums = async () => {
   }
 };
 
+exports.getAlbum = async albumId => {
+  try {
+    const endpoint = `${config.api_url}/albums/${albumId}`;
+    const response = await fetch(endpoint);
+    if (response.status !== 200) {
+      throw errors.conectionError('Error calling api');
+    }
+    return response.json();
+  } catch (e) {
+    throw errors.conectionError(e.message);
+  }
+};
+
 exports.getPhotosOfAlbum = async albumId => {
   const query = `?albumId=${albumId}`;
   const endpoint = `${config.api_url}/photos${query}`;

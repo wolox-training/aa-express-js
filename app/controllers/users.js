@@ -1,4 +1,5 @@
 const usersService = require('../services/user');
+const albumsService = require('../services/album');
 const log = require('../logger');
 
 exports.addUser = (req, res, next) =>
@@ -35,3 +36,13 @@ exports.getUsers = (req, res, next) =>
       log.error(err.message);
       return next(err);
     });
+exports.getAlbumsOfUser = (req, res, next) => {
+  const userId = req.params.id;
+  return usersService
+    .getAlbumsOfUser(req.decode.email, userId, req.decode.admin, albumsService.getAlbum)
+    .then(albums => res.status(200).send(albums))
+    .catch(err => {
+      log.error(err.message);
+      return next(err);
+    });
+};
