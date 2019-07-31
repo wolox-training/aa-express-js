@@ -22,7 +22,7 @@ describe('Get Photo Of An Album Bougth', () => {
     await request(app)
       .post('/users')
       .send(firstRightQuery)
-      .expect(200);
+      .expect(201);
     done();
   });
   test('Correct Get Photo', async () => {
