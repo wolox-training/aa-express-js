@@ -82,21 +82,16 @@ exports.getUsers = async params => {
   }
 };
 exports.getAlbumsOfUser = async (userEmail, userId, admin, getAlbum) => {
-  const albumsProm = [];
   try {
-    const user = await User.find({ where: { id: userId } });
+    const user = await User.findOne({ where: { id: userId } });
     if (!user) {
-      throw errors.badRequest('User not exist');
+      throw errors.notFound('User not exist');
     }
     if (user.email !== userEmail && !admin) {
       throw errors.forbiddenUser('You can not see albums from other users');
     }
     const transactions = await AlbumTransaction.findAll({ where: { userId } });
-    transactions.forEach(transaction => {
-      const albumProm = getAlbum(transaction.albumId);
-      albumsProm.push(albumProm);
-    });
-    return Promise.all(albumsProm);
+    return Promise.map(transactions, transcation => getAlbum(transcation));
   } catch (e) {
     if (e.internalCode) {
       throw e;
