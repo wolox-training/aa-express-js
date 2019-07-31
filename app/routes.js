@@ -10,7 +10,11 @@ exports.init = app => {
   app.post('/albums/:id', [securityMiddle.checkToken], albumsController.buyAlbum);
   app.get('/albums/:id/photos', albumsController.getPhotoOfAlbum);
   app.get('/users/:id/albums', [securityMiddle.checkToken], userController.getAlbumsOfUser);
-  app.post('/admin/users', [userMiddle.createUser, securityMiddle.checkToken], adminController.addAdminUser);
+  app.post(
+    '/admin/users',
+    [userMiddle.createUser, securityMiddle.checkToken, securityMiddle.isAdmin],
+    adminController.addAdminUser
+  );
   app.get('/users', [userMiddle.listUsers, securityMiddle.checkToken], userController.getUsers);
   app.post('/users', userMiddle.createUser, userController.addUser);
   app.post('/users/sessions', userMiddle.loginUser, userController.loginUser);
