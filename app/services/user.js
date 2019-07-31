@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models').users;
-const AlbumTransaction = require('../models').albums_transactions;
+const AlbumTransaction = require('../models').albumsTransactions;
 const errors = require('../errors');
 const secretKey = require('../../config').common.jwt.secret_key;
 const saltRounds = 10;
@@ -101,11 +101,11 @@ exports.getAlbumsOfUser = async (userEmail, userId, admin, getAlbum) => {
 };
 exports.getPhotosOfAlbums = async (userEmail, albumId, getPhotosOfAlbum) => {
   try {
-    const user = await User.find({ where: { email: userEmail } });
+    const user = await User.findOne({ where: { email: userEmail } });
     if (!user) {
       throw errors.badRequest('User not exist');
     }
-    const transaction = await AlbumTransaction.find({ where: { userId: user.id, albumId } });
+    const transaction = await AlbumTransaction.findOne({ where: { userId: user.id, albumId } });
     if (!transaction) {
       throw errors.badRequest('You did not buy this album');
     }
