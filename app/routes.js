@@ -6,19 +6,26 @@ const userMiddle = require('./middlewares/user');
 const securityMiddle = require('./middlewares/security');
 exports.init = app => {
   app.get('/health', healthCheck);
+  // Obtener info de un album
   app.get('/albums', albumsController.getAlbums);
+  // Comprar un album
   app.post('/albums/:id', [securityMiddle.checkToken], albumsController.buyAlbum);
+  // Obtener fotos de un album
   app.get('/albums/:id/photos', albumsController.getPhotoOfAlbum);
+  // Listar albums comprados
   app.get('/users/:id/albums', [securityMiddle.checkToken], userController.getAlbumsOfUser);
+  // Obtener photos de un album comprado
+  app.get('/users/albums/:id/photos', [securityMiddle.checkToken], userController.getPhotosOfAlbum);
+  // Crear un usuario admin
   app.post(
     '/admin/users',
     [userMiddle.createUser, securityMiddle.checkToken, securityMiddle.isAdmin],
     adminController.addAdminUser
   );
+  // Obtener usuarios
   app.get('/users', [userMiddle.listUsers, securityMiddle.checkToken], userController.getUsers);
+  // Crear usuario
   app.post('/users', userMiddle.createUser, userController.addUser);
+  // Loguearse
   app.post('/users/sessions', userMiddle.loginUser, userController.loginUser);
-  // app.get('/endpoint/get/path', [], controller.methodGET);
-  // app.put('/endpoint/put/path', [], controller.methodPUT);
-  // app.post('/endpoint/post/path', [], controller.methodPOST);
 };

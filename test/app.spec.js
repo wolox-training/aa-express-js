@@ -4,6 +4,10 @@ const fs = require('fs'),
   models = require('../app/models'),
   path = require('path');
 
+const { getAlbumsFetch } = require('./__mocks__/photosFetch');
+const fetchMock = require('./__mocks__/node-fetch');
+fetchMock.get('begin:https://jsonplaceholder.typicode.com/albums', getAlbumsFetch);
+
 const tables = Object.values(models.sequelize.models);
 
 const truncateTable = model =>
