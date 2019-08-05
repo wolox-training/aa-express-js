@@ -63,7 +63,7 @@ exports.loginUser = async body => {
         throw errors.badRequest('Wrong password');
       }
       await user.update({ timestampTokenCreation: moment().format() });
-      return jwt.sign({ email: user.email, admin: user.admin, tokenCreation: moment().format() }, secretKey, {
+      return jwt.sign({ email: user.email, admin: user.admin }, secretKey, {
         expiresIn: expirationTime
       });
     });

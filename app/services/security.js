@@ -10,6 +10,6 @@ exports.validateToken = async tokenDecoded => {
   }
   return (
     user.timestampTokenCreation &&
-    moment(user.timestampTokenCreation).isSameOrBefore(moment(tokenDecoded.tokenCreation))
+    moment(user.timestampTokenCreation).isSameOrBefore(moment.unix(tokenDecoded.iat).format())
   );
 };
